@@ -1,11 +1,12 @@
 from abc import abstractmethod
 import array
+import collections
 import enum
 
 from typing import Any, Callable, Dict, List, Optional, TypeAlias, cast, Final, final
 import xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
-from collections.abc import Sized
+from collections import abc
 from dataclasses import dataclass, field
 import datetime as dt
 import numbers
@@ -162,7 +163,7 @@ class DataProcessor_BaseClass:
             a = self.attr_format_string_hint(config=config, parent=parent, current=current, data=data, **kwargs)
             attr |= a
 
-        if (AttributeFlags.INC_LEN & config.attr_flags) and (isinstance(data, Sized)):
+        if (AttributeFlags.INC_LEN & config.attr_flags) and (isinstance(data, abc.Sized)):
             a = self.attr_len(config=config, parent=parent, current=current, data=data, **kwargs)
             attr |= a
 
@@ -225,7 +226,7 @@ class DataProcessor_BaseClass:
     @ final
     @ staticmethod
     def is_dict(data: Any) -> bool:
-        return isinstance(data, dict)
+        return isinstance(data, dict) or isinstance(data, abc.Mapping)
 
     @ final
     @ staticmethod
@@ -250,7 +251,9 @@ class DataProcessor_BaseClass:
     @ final
     @ staticmethod
     def is_sequence(data: Any) -> bool:
-        return isinstance(data, list | tuple | set | range | array.array | deque) and not DataProcessor_BaseClass.is_namedtuple(data)
+        return isinstance(data, list | tuple | set | range | array.array | deque | abc.Iterator) \
+            and not DataProcessor_BaseClass.is_namedtuple(data) \
+            and not DataProcessor_BaseClass.is_dict(data)
 
     @ final
     @ staticmethod

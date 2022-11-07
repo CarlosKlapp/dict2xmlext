@@ -1,5 +1,5 @@
 <root id="1">
-  <sequence id="2" debug_info="processed_by:DataProcessor_sequences" length="3" py_type="class 'list'" size_bytes="80" xsd_type="anyType">
+  <sequence id="2" debug_info="processed_by:DataProcessor_sequence" length="3" py_type="class 'list'" size_bytes="80" xsd_type="anyType">
     <MyClass id="3" debug_info="processed_by:DataProcessor_MyClass" py_type="class 'tests.predefined_test_cases.MyClass'" size_bytes="48" xsd_type="anyType">
       <name id="4" debug_info="processed_by:DataProcessor_str" length="9" py_type="class 'str'" size_bytes="58" xsd_type="anyType">test name</name>
     </MyClass>

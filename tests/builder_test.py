@@ -15,6 +15,7 @@ from libs.data_processor import DataProcessor_BaseClass, DataProcessor_used_for_
 from libs.misc import coalesce
 from dateutil import tz
 from tests.predefined_test_cases import test_case, MyClass, MySubClass, MySubSubClass
+from tests.config_test_cases import test_cases_config_rewrite_expected_output
 
 
 class TestBuilder(unittest.TestCase):
@@ -28,8 +29,9 @@ class TestBuilder(unittest.TestCase):
         ET.indent(e)
         result = ET.tostring(e, encoding='unicode')
 
-        with open('./tests/expected_test_builder.INC_ALL_DEBUG.xml', 'w', encoding="utf-8") as f:
-            f.write(result)
+        if test_cases_config_rewrite_expected_output:
+            with open('./tests/expected_test_builder.INC_ALL_DEBUG.xml', 'w', encoding="utf-8") as f:
+                f.write(result)
 
         with open('./tests/expected_test_builder.INC_ALL_DEBUG.xml', 'r', encoding="utf-8") as f:
             expected = f.read()
@@ -107,8 +109,9 @@ class TestBuilder(unittest.TestCase):
         ET.indent(e)
         result = ET.tostring(e, encoding='unicode')
 
-        with open('./tests/expected_test_custom_data_processors_using_inheritance.INC_ALL_DEBUG.xml', 'w', encoding="utf-8") as f:
-            f.write(result)
+        if test_cases_config_rewrite_expected_output:
+            with open('./tests/expected_test_custom_data_processors_using_inheritance.INC_ALL_DEBUG.xml', 'w', encoding="utf-8") as f:
+                f.write(result)
 
         with open('./tests/expected_test_custom_data_processors_using_inheritance.INC_ALL_DEBUG.xml', 'r', encoding="utf-8") as f:
             expected = f.read()
@@ -189,8 +192,9 @@ class TestBuilder(unittest.TestCase):
         ET.indent(e)
         result = ET.tostring(e, encoding='unicode')
 
-        with open('./tests/expected_test_custom_data_processors_without_inheritance.INC_ALL_DEBUG.xml', 'w', encoding="utf-8") as f:
-            f.write(result)
+        if test_cases_config_rewrite_expected_output:
+            with open('./tests/expected_test_custom_data_processors_without_inheritance.INC_ALL_DEBUG.xml', 'w', encoding="utf-8") as f:
+                f.write(result)
 
         with open('./tests/expected_test_custom_data_processors_without_inheritance.INC_ALL_DEBUG.xml', 'r', encoding="utf-8") as f:
             expected = f.read()

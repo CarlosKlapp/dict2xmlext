@@ -1,7 +1,7 @@
 from zoneinfo import ZoneInfo
 import array
 import calendar
-from collections import ChainMap, namedtuple, deque
+from collections import ChainMap, Counter, OrderedDict, UserDict, UserList, UserString, namedtuple, deque
 import enum
 import datetime as dt
 from dateutil import tz
@@ -111,6 +111,11 @@ test_case = {
     'list_of_classes': list_of_my_classes,
     'collections': {
         'deque': deque('ghi'),
-        'ChainMap': ChainMap({'art': 'van gogh', 'opera': 'carmen'}, {'music': 'bach', 'art': 'rembrandt'})
+        'ChainMap': ChainMap({'art': 'van gogh', 'opera': 'carmen'}, {'music': 'bach', 'art': 'rembrandt'}),
+        'counter': Counter(a=4, b=2, c=0, d=-2),
+        'OrderedDict': OrderedDict(one=1, two=2, three=3),
+        'UserDict': UserDict([('yellow', 1), ('blue', 2), ('yellow', 3), ('blue', 4), ('red', 1)]),
+        'UserList': UserList([('yellow', 1), ('blue', 2), ('yellow', 3), ('blue', 4), ('red', 1)]),
+        'UserString': UserString('foobar'),
     }
 }

@@ -10,7 +10,7 @@
     <sub id="10" debug_info="processed_by:DataProcessor_dict" length="8" py_type="class 'dict'" size_bytes="360" xsd_type="anyType">
       <sub1 id="11" debug_info="processed_by:DataProcessor_str" length="2" py_type="class 'str'" size_bytes="51" xsd_type="anyType">v1</sub1>
       <sub2 id="12" debug_info="processed_by:DataProcessor_str" length="2" py_type="class 'str'" size_bytes="51" xsd_type="anyType">v2</sub2>
-      <l1 id="13" debug_info="processed_by:DataProcessor_sequences" length="3" py_type="class 'list'" size_bytes="88" xsd_type="anyType">
+      <l1 id="13" debug_info="processed_by:DataProcessor_sequence" length="3" py_type="class 'list'" size_bytes="88" xsd_type="anyType">
         <str id="14" debug_info="processed_by:DataProcessor_str" length="1" py_type="class 'str'" size_bytes="50" xsd_type="anyType">a</str>
         <str id="15" debug_info="processed_by:DataProcessor_str" length="1" py_type="class 'str'" size_bytes="50" xsd_type="anyType">b</str>
         <str id="16" debug_info="processed_by:DataProcessor_str" length="1" py_type="class 'str'" size_bytes="50" xsd_type="anyType">c</str>
@@ -40,18 +40,18 @@
       <bytearray id="37" binary_encoding="base64" debug_info="processed_by:DataProcessor_binary" length="6" py_type="class 'bytearray'" size_bytes="63" xsd_type="anyType">Av7M3TIU</bytearray>
     </binary>
     <sequences id="38" debug_info="processed_by:DataProcessor_dict" length="7" py_type="class 'dict'" size_bytes="360" xsd_type="anyType">
-      <list id="39" debug_info="processed_by:DataProcessor_sequences" length="1" py_type="class 'list'" size_bytes="64" xsd_type="anyType">
+      <list id="39" debug_info="processed_by:DataProcessor_sequence" length="1" py_type="class 'list'" size_bytes="64" xsd_type="anyType">
         <numeric id="40" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">323</numeric>
       </list>
-      <tuple id="41" debug_info="processed_by:DataProcessor_sequences" length="3" py_type="class 'tuple'" size_bytes="64" xsd_type="anyType">
+      <tuple id="41" debug_info="processed_by:DataProcessor_sequence" length="3" py_type="class 'tuple'" size_bytes="64" xsd_type="anyType">
         <numeric id="42" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">12345</numeric>
         <numeric id="43" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">54321</numeric>
         <str id="44" debug_info="processed_by:DataProcessor_str" length="6" py_type="class 'str'" size_bytes="55" xsd_type="anyType">hello!</str>
       </tuple>
-      <set id="45" debug_info="processed_by:DataProcessor_sequences" length="1" py_type="class 'set'" size_bytes="216" xsd_type="anyType">
+      <set id="45" debug_info="processed_by:DataProcessor_sequence" length="1" py_type="class 'set'" size_bytes="216" xsd_type="anyType">
         <numeric id="46" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">453</numeric>
       </set>
-      <range id="47" debug_info="processed_by:DataProcessor_sequences" length="10" py_type="class 'range'" size_bytes="48" xsd_type="anyType">
+      <range id="47" debug_info="processed_by:DataProcessor_sequence" length="10" py_type="class 'range'" size_bytes="48" xsd_type="anyType">
         <numeric id="48" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="24" xsd_type="anyType">0</numeric>
         <numeric id="49" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">1</numeric>
         <numeric id="50" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">2</numeric>
@@ -63,7 +63,7 @@
         <numeric id="56" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">8</numeric>
         <numeric id="57" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">9</numeric>
       </range>
-      <array id="58" debug_info="processed_by:DataProcessor_sequences" length="3" py_type="class 'array.array'" size_bytes="92" xsd_type="anyType">
+      <array id="58" debug_info="processed_by:DataProcessor_sequence" length="3" py_type="class 'array.array'" size_bytes="92" xsd_type="anyType">
         <numeric id="59" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">1</numeric>
         <numeric id="60" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">2</numeric>
         <numeric id="61" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">3</numeric>
@@ -79,7 +79,7 @@
     </sequences>
     <obj id="68" debug_info="processed_by:DataProcessor_last_chance" py_type="class 'object'" size_bytes="16" xsd_type="anyType">object object</obj>
     <inv_tag_placeholder id="69" original_element_name="dummy-func" debug_info="processed_by:DataProcessor_last_chance" py_type="class 'function'" size_bytes="144" xsd_type="anyType">function dummy_function</inv_tag_placeholder>
-    <list_of_classes id="70" debug_info="processed_by:DataProcessor_sequences" length="3" py_type="class 'list'" size_bytes="80" xsd_type="anyType">
+    <list_of_classes id="70" debug_info="processed_by:DataProcessor_sequence" length="3" py_type="class 'list'" size_bytes="80" xsd_type="anyType">
       <MyClass id="71" debug_info="processed_by:DataProcessor_post_processor_for_classes" py_type="class 'tests.predefined_test_cases.MyClass'" size_bytes="48" xsd_type="anyType">
         <name id="72" debug_info="processed_by:DataProcessor_str" length="9" py_type="class 'str'" size_bytes="58" xsd_type="anyType">test name</name>
       </MyClass>
@@ -98,14 +98,14 @@
         <port id="84" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">8080</port>
       </MySubSubClass>
     </list_of_classes>
-    <collections id="85" debug_info="processed_by:DataProcessor_dict" length="2" py_type="class 'dict'" size_bytes="232" xsd_type="anyType">
-      <deque id="86" debug_info="processed_by:DataProcessor_sequences" length="3" py_type="class 'collections.deque'" size_bytes="624" xsd_type="anyType">
+    <collections id="85" debug_info="processed_by:DataProcessor_dict" length="7" py_type="class 'dict'" size_bytes="360" xsd_type="anyType">
+      <deque id="86" debug_info="processed_by:DataProcessor_sequence" length="3" py_type="class 'collections.deque'" size_bytes="624" xsd_type="anyType">
         <str id="87" debug_info="processed_by:DataProcessor_str" length="1" py_type="class 'str'" size_bytes="50" xsd_type="anyType">g</str>
         <str id="88" debug_info="processed_by:DataProcessor_str" length="1" py_type="class 'str'" size_bytes="50" xsd_type="anyType">h</str>
         <str id="89" debug_info="processed_by:DataProcessor_str" length="1" py_type="class 'str'" size_bytes="50" xsd_type="anyType">i</str>
       </deque>
       <ChainMap id="90" debug_info="processed_by:DataProcessor_ChainMap" length="3" py_type="class 'collections.ChainMap'" size_bytes="48" xsd_type="anyType">
-        <sequence id="91" debug_info="processed_by:DataProcessor_sequences" length="2" py_type="class 'list'" size_bytes="72" xsd_type="anyType">
+        <sequence id="91" debug_info="processed_by:DataProcessor_sequence" length="2" py_type="class 'list'" size_bytes="72" xsd_type="anyType">
           <dict id="92" debug_info="processed_by:DataProcessor_dict" length="2" py_type="class 'dict'" size_bytes="232" xsd_type="anyType">
             <art id="93" debug_info="processed_by:DataProcessor_str" length="8" py_type="class 'str'" size_bytes="57" xsd_type="anyType">van gogh</art>
             <opera id="94" debug_info="processed_by:DataProcessor_str" length="6" py_type="class 'str'" size_bytes="55" xsd_type="anyType">carmen</opera>
@@ -116,6 +116,51 @@
           </dict>
         </sequence>
       </ChainMap>
+      <counter id="98" debug_info="processed_by:DataProcessor_dict" length="4" py_type="class 'collections.Counter'" size_bytes="248" xsd_type="anyType">
+        <a id="99" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">4</a>
+        <b id="100" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">2</b>
+        <c id="101" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="24" xsd_type="anyType">0</c>
+        <d id="102" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">-2</d>
+      </counter>
+      <OrderedDict id="103" debug_info="processed_by:DataProcessor_dict" length="3" py_type="class 'collections.OrderedDict'" size_bytes="456" xsd_type="anyType">
+        <one id="104" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">1</one>
+        <two id="105" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">2</two>
+        <three id="106" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">3</three>
+      </OrderedDict>
+      <UserDict id="107" debug_info="processed_by:DataProcessor_dict" length="3" py_type="class 'collections.UserDict'" size_bytes="48" xsd_type="anyType">
+        <yellow id="108" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">3</yellow>
+        <blue id="109" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">4</blue>
+        <red id="110" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">1</red>
+      </UserDict>
+      <UserList id="111" debug_info="processed_by:DataProcessor_post_processor_for_classes" length="5" py_type="class 'collections.UserList'" size_bytes="48" xsd_type="anyType">
+        <_abc_impl id="112" debug_info="processed_by:DataProcessor_last_chance" py_type="class '_abc._abc_data'" size_bytes="64" xsd_type="anyType">_abc._abc_data object</_abc_impl>
+        <data id="113" debug_info="processed_by:DataProcessor_sequence" length="5" py_type="class 'list'" size_bytes="120" xsd_type="anyType">
+          <sequence id="114" debug_info="processed_by:DataProcessor_sequence" length="2" py_type="class 'tuple'" size_bytes="56" xsd_type="anyType">
+            <str id="115" debug_info="processed_by:DataProcessor_str" length="6" py_type="class 'str'" size_bytes="55" xsd_type="anyType">yellow</str>
+            <numeric id="116" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">1</numeric>
+          </sequence>
+          <sequence id="117" debug_info="processed_by:DataProcessor_sequence" length="2" py_type="class 'tuple'" size_bytes="56" xsd_type="anyType">
+            <str id="118" debug_info="processed_by:DataProcessor_str" length="4" py_type="class 'str'" size_bytes="53" xsd_type="anyType">blue</str>
+            <numeric id="119" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">2</numeric>
+          </sequence>
+          <sequence id="120" debug_info="processed_by:DataProcessor_sequence" length="2" py_type="class 'tuple'" size_bytes="56" xsd_type="anyType">
+            <str id="121" debug_info="processed_by:DataProcessor_str" length="6" py_type="class 'str'" size_bytes="55" xsd_type="anyType">yellow</str>
+            <numeric id="122" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">3</numeric>
+          </sequence>
+          <sequence id="123" debug_info="processed_by:DataProcessor_sequence" length="2" py_type="class 'tuple'" size_bytes="56" xsd_type="anyType">
+            <str id="124" debug_info="processed_by:DataProcessor_str" length="4" py_type="class 'str'" size_bytes="53" xsd_type="anyType">blue</str>
+            <numeric id="125" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">4</numeric>
+          </sequence>
+          <sequence id="126" debug_info="processed_by:DataProcessor_sequence" length="2" py_type="class 'tuple'" size_bytes="56" xsd_type="anyType">
+            <str id="127" debug_info="processed_by:DataProcessor_str" length="3" py_type="class 'str'" size_bytes="52" xsd_type="anyType">red</str>
+            <numeric id="128" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">1</numeric>
+          </sequence>
+        </data>
+      </UserList>
+      <UserString id="129" debug_info="processed_by:DataProcessor_post_processor_for_classes" length="6" py_type="class 'collections.UserString'" size_bytes="48" xsd_type="anyType">
+        <_abc_impl id="130" debug_info="processed_by:DataProcessor_last_chance" py_type="class '_abc._abc_data'" size_bytes="64" xsd_type="anyType">_abc._abc_data object</_abc_impl>
+        <data id="131" debug_info="processed_by:DataProcessor_str" length="6" py_type="class 'str'" size_bytes="55" xsd_type="anyType">foobar</data>
+      </UserString>
     </collections>
   </dict>
 </root>

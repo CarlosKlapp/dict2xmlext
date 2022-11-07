@@ -14,6 +14,7 @@ import datetime as dt
 from dateutil import tz
 from collections import namedtuple
 from zoneinfo import ZoneInfo
+from tests.config_test_cases import test_cases_config_rewrite_expected_output
 from tests.predefined_test_cases import list_of_my_classes
 
 
@@ -313,8 +314,11 @@ class TestDataProcessor(unittest.TestCase):
         assert e is not None
         ET.indent(e)
         result = ET.tostring(e, encoding='unicode')
-        with open('./tests/expected_test_DataProcessor_class_custom_post_processor.mangled.xml', 'w', encoding="utf-8") as f:
-            f.write(result)
+
+        if test_cases_config_rewrite_expected_output:
+            with open('./tests/expected_test_DataProcessor_class_custom_post_processor.mangled.xml', 'w', encoding="utf-8") as f:
+                f.write(result)
+
         with open('./tests/expected_test_DataProcessor_class_custom_post_processor.mangled.xml', 'r', encoding="utf-8") as f:
             expected = f.read()
         self.assertEqual(result, expected)
