@@ -1,6 +1,7 @@
 from abc import abstractmethod
 import array
 import enum
+
 from typing import Any, Callable, Dict, List, Optional, TypeAlias, cast, Final, final
 import xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
@@ -16,6 +17,8 @@ from collections import ChainMap, deque, namedtuple
 from libs.attributes import AttributeFlags, AttributeFlagsNames
 from libs.builder_baseclass import CLASS_BUILDER_CONFIG, DATA_PROCESSOR_RETURN_TYPE
 
+debug_break_on_DataProcessor: Final[bool] = False
+
 
 class DataProcessor_BaseClass:
     """
@@ -24,8 +27,25 @@ class DataProcessor_BaseClass:
     [<class 'zoneinfo.ZoneInfo'>, <class 'datetime.tzinfo'>, <class 'object'>]
     """
 
-    # Used by child classes
-    _custom_element_name: Optional[str] = None
+    @abstractmethod
+    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+        pass
+
+    @abstractmethod
+    def is_expected_data_type(self, data: Any) -> bool:
+        pass
+
+    def recursively_process_any_nested_objects(self, config: CLASS_BUILDER_CONFIG, parent: ET.Element, current: ET.Element, data: Any, **kwargs) -> None:
+        pass
+
+    def get_textual_representation_of_data(self, config: CLASS_BUILDER_CONFIG, parent: ET.Element, current: ET.Element, data: Any, **kwargs) -> Optional[str]:
+        return None
+
+    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
+        return None
+
+    def get_element_name(self, config: CLASS_BUILDER_CONFIG, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> str:
+        return child_name or self.get_element_name_from_config(config) or self.get_default_element_name(config, data)
 
     def get_field_type_hint(self, data: Any, **kwargs) -> Optional[str]:
         return None
@@ -36,9 +56,19 @@ class DataProcessor_BaseClass:
     def get_format_string_hint(self, data: Any, **kwargs) -> Optional[str]:
         return None
 
-    @abstractmethod
     def create_tree(self, config: CLASS_BUILDER_CONFIG, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> DATA_PROCESSOR_RETURN_TYPE:
-        pass  # pragma: no cover
+        if not self.is_expected_data_type(data):
+            return None
+        if __debug__ and debug_break_on_DataProcessor:
+            breakpoint()
+
+        new_tag: str = self.get_element_name(config=config, parent=parent, data=data, child_name=child_name)
+        current = config.SubElement(parent, new_tag)
+        text = self.get_textual_representation_of_data(config=config, parent=parent, current=current, data=data)
+        if text is not None:
+            current.text = text
+        self.recursively_process_any_nested_objects(config=config, parent=parent, current=current, data=data)
+        return current
 
     def process(self, config: CLASS_BUILDER_CONFIG, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> DATA_PROCESSOR_RETURN_TYPE:
         e = self.create_tree(config=config, parent=parent, data=data, child_name=child_name)

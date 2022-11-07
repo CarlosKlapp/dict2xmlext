@@ -13,14 +13,30 @@ DATA_PROCESSOR_RETURN_TYPE: TypeAlias = Optional[ET.Element]
 @ dataclass
 class BuilderConfig_BaseClass(ABC):
     root_label: str = 'root'
-    default_ChainMap_label: str = 'ChainMap'
-    default_dict_label: str = 'dict'
-    default_sequence_label: str = 'sequence'
-    default_namedtuple_label: str = 'namedtuple'
-    default_item_label: str = 'item'
-    default_label: str = 'unknown_object'
-    default_label_invalid_xml_element_name: str = 'inv_tag_placeholder'
-    default_label_invalid_xml_element_name_attribute: str = 'original_element_name'
+
+    override_binary_label: Optional[str] = None
+    override_bool_label: Optional[str] = None
+    override_calendar_label: Optional[str] = None
+    override_ChainMap_label: Optional[str] = None
+    override_child_item_label: Optional[str] = None
+    override_class_label: Optional[str] = None
+    override_date_label: Optional[str] = None
+    override_datetime_label: Optional[str] = None
+    override_dict_label: Optional[str] = None
+    override_enum_label: Optional[str] = None
+    override_namedtuple_label: Optional[str] = None
+    override_none_label: Optional[str] = None
+    override_numeric_label: Optional[str] = None
+    override_sequence_label: Optional[str] = None
+    override_str_label: Optional[str] = None
+    override_time_label: Optional[str] = None
+    override_timedelta_label: Optional[str] = None
+    override_tzinfo_label: Optional[str] = None
+    override_unknown_object_label: Optional[str] = None
+    override_zoneinfo_label: Optional[str] = None
+
+    label_invalid_xml_element_name: str = 'inv_tag_placeholder'
+    label_invalid_xml_element_name_attribute: str = 'original_element_name'
 
     _codec_binary: CodecWrapper = CodecWrapper()
     _codec_text: CodecWrapper = CodecWrapper()
@@ -34,7 +50,7 @@ class BuilderConfig_BaseClass(ABC):
         if self.is_valid_xml_element_name(tag):
             return (tag, {})
         else:
-            return (self.default_label_invalid_xml_element_name, {self.default_label_invalid_xml_element_name_attribute: tag})
+            return (self.label_invalid_xml_element_name, {self.label_invalid_xml_element_name_attribute: tag})
 
     def get_codec_binary(self) -> CodecWrapper:
         return self._codec_binary
@@ -64,30 +80,6 @@ class BuilderConfig_BaseClass(ABC):
 
     @abstractmethod
     def process(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> DATA_PROCESSOR_RETURN_TYPE:
-        pass  # pragma: no cover
-
-    @abstractmethod
-    def get_default_dict_name(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> str:
-        pass  # pragma: no cover
-
-    @abstractmethod
-    def get_default_ChainMap_name(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> str:
-        pass  # pragma: no cover
-
-    @abstractmethod
-    def get_default_sequence_name(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> str:
-        pass  # pragma: no cover
-
-    @abstractmethod
-    def get_default_namedtuple_name(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> str:
-        pass  # pragma: no cover
-
-    @abstractmethod
-    def get_default_item_name(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> str:
-        pass  # pragma: no cover
-
-    @abstractmethod
-    def get_default_name(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> str:
         pass  # pragma: no cover
 
     @abstractmethod

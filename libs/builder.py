@@ -17,10 +17,10 @@ from dataclasses import dataclass, field
 from libs.attributes import AttributeFlags, AttributeFlagsNames
 from libs.builder_baseclass import BuilderConfig_BaseClass, DATA_PROCESSOR_RETURN_TYPE
 from libs.data_processor import DataProcessor_BaseClass, DataProcessor_binary, DataProcessor_bool, \
-    DataProcessor_calendar, DataProcessor_class_custom_post_processor, \
+    DataProcessor_calendar, DataProcessor_post_processor_for_classes, \
     DataProcessor_date, DataProcessor_datetime, DataProcessor_dict, DataProcessor_enum, \
     DataProcessor_namedtuple, DataProcessor_none, DataProcessor_numeric, \
-    DataProcessor_sequences, DataProcessor_str, DataProcessor_time, DataProcessor_timedelta, \
+    DataProcessor_sequence, DataProcessor_str, DataProcessor_time, DataProcessor_timedelta, \
     DataProcessor_timezone, DataProcessor_tzinfo, DataProcessor_zoneinfo, DataProcessor_last_chance, \
     DataProcessor_ChainMap
 
@@ -39,7 +39,7 @@ class BuilderConfig(BuilderConfig_BaseClass):
         DataProcessor_none(),
         DataProcessor_numeric(),
         DataProcessor_namedtuple(),
-        DataProcessor_sequences(),
+        DataProcessor_sequence(),
         DataProcessor_str(),
         DataProcessor_time(),
         DataProcessor_timedelta(),
@@ -49,7 +49,7 @@ class BuilderConfig(BuilderConfig_BaseClass):
     ])
     custom_pre_processors: List[DataProcessor_BaseClass] = field(default_factory=list)
     custom_post_processors: List[DataProcessor_BaseClass] = field(default_factory=lambda: [
-        DataProcessor_class_custom_post_processor()
+        DataProcessor_post_processor_for_classes()
     ])
     last_chance_processor: DataProcessor_last_chance = DataProcessor_last_chance()
     num_elements_counter: int = 0
@@ -76,24 +76,6 @@ class BuilderConfig(BuilderConfig_BaseClass):
     def process(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> DATA_PROCESSOR_RETURN_TYPE:
         e = self._process_helper(parent=parent, data=data, child_name=child_name)
         assert e is not None
-
-    def get_default_ChainMap_name(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> str:
-        return self.default_ChainMap_label if child_name is None else child_name
-
-    def get_default_dict_name(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> str:
-        return self.default_dict_label if child_name is None else child_name
-
-    def get_default_sequence_name(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> str:
-        return self.default_sequence_label if child_name is None else child_name
-
-    def get_default_namedtuple_name(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> str:
-        return self.default_namedtuple_label if child_name is None else child_name
-
-    def get_default_item_name(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> str:
-        return self.default_item_label if child_name is None else child_name
-
-    def get_default_name(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> str:
-        return self.default_label if child_name is None else child_name
 
     def include_seq_id_as_attribute(self) -> Dict[str, str]:
         attrib: Dict[str, str] = {}

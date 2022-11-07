@@ -9,7 +9,7 @@ from libs.builder import Builder, BuilderConfig
 from libs.attributes import AttributeFlags, AttributeFlagsNames
 from libs.builder_baseclass import CLASS_BUILDER_CONFIG, DATA_PROCESSOR_RETURN_TYPE
 from libs.codec_wrapper import CodecWrapper
-from libs.data_processor import DataProcessor_BaseClass, DataProcessor_binary, DataProcessor_class_custom_post_processor, DataProcessor_tzinfo, DataProcessor_used_for_testing, DataProcessor_used_for_testing_use_hints
+from libs.data_processor import DataProcessor_BaseClass, DataProcessor_binary, DataProcessor_post_processor_for_classes, DataProcessor_tzinfo, DataProcessor_used_for_testing, DataProcessor_used_for_testing_use_hints
 import datetime as dt
 from dateutil import tz
 from collections import namedtuple
@@ -303,7 +303,7 @@ class TestDataProcessor(unittest.TestCase):
 
     def test_DataProcessor_class_custom_post_processor(self):
         # cspell:ignore unmangled
-        dp = DataProcessor_class_custom_post_processor()
+        dp = DataProcessor_post_processor_for_classes()
         config = BuilderConfig()
 
         config.attr_flags = AttributeFlags.NONE

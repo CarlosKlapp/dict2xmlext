@@ -1,5 +1,5 @@
 <root>
-  <sequences>
+  <sequence>
     <MyClass>
       <name>test name</name>
     </MyClass>
@@ -17,5 +17,5 @@
       <name>test name</name>
       <port>8080</port>
     </MySubSubClass>
-  </sequences>
+  </sequence>
 </root>
