@@ -1,0 +1,105 @@
+<root id="1">
+  <dict id="2" debug_info="processed_by:DataProcessor_dict" length="17" py_type="class 'dict'" size_bytes="640" xsd_type="anyType">
+    <inv_tag_placeholder id="3" original_element_name="12" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">144</inv_tag_placeholder>
+    <inv_tag_placeholder id="4" original_element_name="none-nothing" debug_info="processed_by:DataProcessor_none" py_type="class 'NoneType'" size_bytes="16" xsd_type="anyType" />
+    <inv_tag_placeholder id="5" original_element_name="empty-string" debug_info="processed_by:DataProcessor_str" length="0" py_type="class 'str'" size_bytes="49" xsd_type="anyType" />
+    <Shape id="6" debug_info="processed_by:DataProcessor_enum" py_type="enum 'Shape'" size_bytes="44" xsd_type="anyType">1</Shape>
+    <Perm id="7" debug_info="processed_by:DataProcessor_enum" py_type="enum 'Perm'" size_bytes="44" xsd_type="anyType">4</Perm>
+    <name id="8" debug_info="processed_by:DataProcessor_str" length="13" py_type="class 'str'" size_bytes="62" xsd_type="anyType">geeksforgeeks</name>
+    <city id="9" debug_info="processed_by:DataProcessor_str" length="8" py_type="class 'str'" size_bytes="57" xsd_type="anyType">new york</city>
+    <sub id="10" debug_info="processed_by:DataProcessor_dict" length="8" py_type="class 'dict'" size_bytes="360" xsd_type="anyType">
+      <sub1 id="11" debug_info="processed_by:DataProcessor_str" length="2" py_type="class 'str'" size_bytes="51" xsd_type="anyType">v1</sub1>
+      <sub2 id="12" debug_info="processed_by:DataProcessor_str" length="2" py_type="class 'str'" size_bytes="51" xsd_type="anyType">v2</sub2>
+      <l1 id="13" debug_info="processed_by:DataProcessor_sequences" length="3" py_type="class 'list'" size_bytes="88" xsd_type="anyType">
+        <item id="14" debug_info="processed_by:DataProcessor_str" length="1" py_type="class 'str'" size_bytes="50" xsd_type="anyType">a</item>
+        <item id="15" debug_info="processed_by:DataProcessor_str" length="1" py_type="class 'str'" size_bytes="50" xsd_type="anyType">b</item>
+        <item id="16" debug_info="processed_by:DataProcessor_str" length="1" py_type="class 'str'" size_bytes="50" xsd_type="anyType">c</item>
+      </l1>
+      <dt id="17" debug_info="processed_by:DataProcessor_dict" length="10" py_type="class 'dict'" size_bytes="360" xsd_type="anyType">
+        <inv_tag_placeholder id="18" original_element_name="my timezone" debug_info="processed_by:DataProcessor_timezone" format_string_hint="UTC±HH:MM" py_type="class 'datetime.timezone'" size_bytes="32" xsd_type="anyType">UTC-6:00</inv_tag_placeholder>
+        <inv_tag_placeholder id="19" original_element_name="my date" debug_info="processed_by:DataProcessor_date" format_string_hint="YYYY-MM-DD" py_type="class 'datetime.date'" size_bytes="32" xsd_type="anyType">2022-11-12</inv_tag_placeholder>
+        <inv_tag_placeholder id="20" original_element_name="my datetime" debug_info="processed_by:DataProcessor_datetime" format_string_hint="YYYY-MM-DDTHH:MM:SS.ffffff" py_type="class 'datetime.datetime'" size_bytes="48" xsd_type="anyType">2022-11-12T14:12:05.000078</inv_tag_placeholder>
+        <inv_tag_placeholder id="21" original_element_name="my time" debug_info="processed_by:DataProcessor_time" format_string_hint="HH:MM:SS[.ssssss]" py_type="class 'datetime.time'" size_bytes="40" xsd_type="anyType">16:15:14</inv_tag_placeholder>
+        <inv_tag_placeholder id="22" original_element_name="my tzinfo" debug_info="processed_by:DataProcessor_tzinfo" comment="IANA time zone database key (e.g. America/New_York, Europe/Paris or Asia/Tokyo)" format_string_hint="Zone/City" py_type="class 'dateutil.tz.tz.tzfile'" size_bytes="48" xsd_type="anyType">America/Chicago</inv_tag_placeholder>
+        <inv_tag_placeholder id="23" original_element_name="my zoneinfo" debug_info="processed_by:DataProcessor_zoneinfo" py_type="class 'zoneinfo.ZoneInfo'" size_bytes="208" xsd_type="anyType">America/Chicago</inv_tag_placeholder>
+        <inv_tag_placeholder id="24" original_element_name="my timedelta" debug_info="processed_by:DataProcessor_timedelta" format_string_hint="[XX day[s], ]HH:MM:SS[.ssssss]" py_type="class 'datetime.timedelta'" size_bytes="40" xsd_type="anyType">34 days, 13:46:57.675423</inv_tag_placeholder>
+        <inv_tag_placeholder id="25" original_element_name="my timedelta -9 hrs" debug_info="processed_by:DataProcessor_timedelta" format_string_hint="[XX day[s], ]HH:MM:SS[.ssssss]" py_type="class 'datetime.timedelta'" size_bytes="40" xsd_type="anyType">-1 day, 15:00:00</inv_tag_placeholder>
+        <inv_tag_placeholder id="26" original_element_name="my timedelta +7 hrs" debug_info="processed_by:DataProcessor_timedelta" format_string_hint="[XX day[s], ]HH:MM:SS[.ssssss]" py_type="class 'datetime.timedelta'" size_bytes="40" xsd_type="anyType">7:00:00</inv_tag_placeholder>
+        <inv_tag_placeholder id="27" original_element_name="my calendar" debug_info="processed_by:DataProcessor_calendar" py_type="class 'calendar.Calendar'" size_bytes="48" xsd_type="anyType">&lt;calendar.Calendar object at 0x7f9ea648ba00&gt;</inv_tag_placeholder>
+      </dt>
+      <inv_tag_placeholder id="28" original_element_name="Color-R" debug_info="processed_by:DataProcessor_enum" py_type="enum 'Color'" size_bytes="48" xsd_type="anyType">1</inv_tag_placeholder>
+      <inv_tag_placeholder id="29" original_element_name="Color-G" debug_info="processed_by:DataProcessor_enum" py_type="enum 'Color'" size_bytes="48" xsd_type="anyType">green</inv_tag_placeholder>
+      <inv_tag_placeholder id="30" original_element_name="Food-F" debug_info="processed_by:DataProcessor_enum" py_type="enum 'Food'" size_bytes="48" xsd_type="anyType">1</inv_tag_placeholder>
+      <inv_tag_placeholder id="31" original_element_name="Food-V" debug_info="processed_by:DataProcessor_enum" py_type="enum 'Food'" size_bytes="48" xsd_type="anyType">veggie</inv_tag_placeholder>
+    </sub>
+    <stock id="32" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">920</stock>
+    <inv_tag_placeholder id="33" original_element_name="bool T" debug_info="processed_by:DataProcessor_bool" py_type="class 'bool'" size_bytes="28" xsd_type="anyType">True</inv_tag_placeholder>
+    <inv_tag_placeholder id="34" original_element_name="bool F" debug_info="processed_by:DataProcessor_bool" py_type="class 'bool'" size_bytes="24" xsd_type="anyType">False</inv_tag_placeholder>
+    <binary id="35" debug_info="processed_by:DataProcessor_dict" length="2" py_type="class 'dict'" size_bytes="232" xsd_type="anyType">
+      <bytes id="36" binary_encoding="base64" debug_info="processed_by:DataProcessor_binary" length="5" py_type="class 'bytes'" size_bytes="38" xsd_type="anyType">ZHVtbXk=</bytes>
+      <bytearray id="37" binary_encoding="base64" debug_info="processed_by:DataProcessor_binary" length="6" py_type="class 'bytearray'" size_bytes="63" xsd_type="anyType">Av7M3TIU</bytearray>
+    </binary>
+    <sequences id="38" debug_info="processed_by:DataProcessor_dict" length="7" py_type="class 'dict'" size_bytes="360" xsd_type="anyType">
+      <list id="39" debug_info="processed_by:DataProcessor_sequences" length="1" py_type="class 'list'" size_bytes="64" xsd_type="anyType">
+        <item id="40" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">323</item>
+      </list>
+      <tuple id="41" debug_info="processed_by:DataProcessor_sequences" length="3" py_type="class 'tuple'" size_bytes="64" xsd_type="anyType">
+        <item id="42" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">12345</item>
+        <item id="43" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">54321</item>
+        <item id="44" debug_info="processed_by:DataProcessor_str" length="6" py_type="class 'str'" size_bytes="55" xsd_type="anyType">hello!</item>
+      </tuple>
+      <set id="45" debug_info="processed_by:DataProcessor_sequences" length="1" py_type="class 'set'" size_bytes="216" xsd_type="anyType">
+        <item id="46" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">453</item>
+      </set>
+      <range id="47" debug_info="processed_by:DataProcessor_sequences" length="10" py_type="class 'range'" size_bytes="48" xsd_type="anyType">
+        <item id="48" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="24" xsd_type="anyType">0</item>
+        <item id="49" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">1</item>
+        <item id="50" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">2</item>
+        <item id="51" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">3</item>
+        <item id="52" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">4</item>
+        <item id="53" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">5</item>
+        <item id="54" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">6</item>
+        <item id="55" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">7</item>
+        <item id="56" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">8</item>
+        <item id="57" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">9</item>
+      </range>
+      <array id="58" debug_info="processed_by:DataProcessor_sequences" length="3" py_type="class 'array.array'" size_bytes="92" xsd_type="anyType">
+        <item id="59" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">1</item>
+        <item id="60" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">2</item>
+        <item id="61" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">3</item>
+      </array>
+      <dict id="62" debug_info="processed_by:DataProcessor_dict" length="1" py_type="class 'dict'" size_bytes="232" xsd_type="anyType">
+        <foo id="63" debug_info="processed_by:DataProcessor_str" length="3" py_type="class 'str'" size_bytes="52" xsd_type="anyType">bar</foo>
+      </dict>
+      <inv_tag_placeholder id="64" original_element_name="named-tuple" debug_info="processed_by:DataProcessor_namedtuple" type_hint="namedtuple" length="3" py_type="class 'tests.predefined_test_cases.Point'" size_bytes="64" xsd_type="anyType">
+        <x id="65" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">11</x>
+        <y id="66" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">13</y>
+        <z id="67" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">17</z>
+      </inv_tag_placeholder>
+    </sequences>
+    <obj id="68" debug_info="processed_by:DataProcessor_last_chance" py_type="class 'object'" size_bytes="16" xsd_type="anyType">&lt;object object at 0x7f9ea7215410&gt;</obj>
+    <inv_tag_placeholder id="69" original_element_name="dummy-func" debug_info="processed_by:DataProcessor_last_chance" py_type="class 'function'" size_bytes="144" xsd_type="anyType">&lt;function dummy_function at 0x7f9ea64291b0&gt;</inv_tag_placeholder>
+    <list_of_classes id="70" debug_info="processed_by:DataProcessor_sequences" length="3" py_type="class 'list'" size_bytes="80" xsd_type="anyType">
+      <MyClass id="71" debug_info="processed_by:DataProcessor_class_custom_post_processor" py_type="class 'tests.predefined_test_cases.MyClass'" size_bytes="48" xsd_type="anyType">
+        <name id="72" debug_info="processed_by:DataProcessor_str" length="9" py_type="class 'str'" size_bytes="58" xsd_type="anyType">test name</name>
+      </MyClass>
+      <MySubClass id="73" debug_info="processed_by:DataProcessor_class_custom_post_processor" py_type="class 'tests.predefined_test_cases.MySubClass'" size_bytes="48" xsd_type="anyType">
+        <_MySubClass__private_instance_var id="74" debug_info="processed_by:DataProcessor_str" length="25" py_type="class 'str'" size_bytes="74" xsd_type="anyType">private instance variable</_MySubClass__private_instance_var>
+        <ip_addr id="75" debug_info="processed_by:DataProcessor_str" length="8" py_type="class 'str'" size_bytes="57" xsd_type="anyType">10.2.3.4</ip_addr>
+        <name id="76" debug_info="processed_by:DataProcessor_str" length="9" py_type="class 'str'" size_bytes="58" xsd_type="anyType">test name</name>
+        <port id="77" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">8080</port>
+      </MySubClass>
+      <MySubSubClass id="78" debug_info="processed_by:DataProcessor_class_custom_post_processor" py_type="class 'tests.predefined_test_cases.MySubSubClass'" size_bytes="48" xsd_type="anyType">
+        <_MySubClass__private_instance_var id="79" debug_info="processed_by:DataProcessor_str" length="25" py_type="class 'str'" size_bytes="74" xsd_type="anyType">private instance variable</_MySubClass__private_instance_var>
+        <geolocation id="80" debug_info="processed_by:DataProcessor_str" length="7" py_type="class 'str'" size_bytes="56" xsd_type="anyType">America</geolocation>
+        <instance_var id="81" debug_info="processed_by:DataProcessor_str" length="25" py_type="class 'str'" size_bytes="74" xsd_type="anyType">example instance variable</instance_var>
+        <ip_addr id="82" debug_info="processed_by:DataProcessor_str" length="8" py_type="class 'str'" size_bytes="57" xsd_type="anyType">10.2.3.4</ip_addr>
+        <name id="83" debug_info="processed_by:DataProcessor_str" length="9" py_type="class 'str'" size_bytes="58" xsd_type="anyType">test name</name>
+        <port id="84" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="28" xsd_type="anyType">8080</port>
+      </MySubSubClass>
+    </list_of_classes>
+    <collections id="85" debug_info="processed_by:DataProcessor_dict" length="1" py_type="class 'dict'" size_bytes="232" xsd_type="anyType">
+      <deque id="86" debug_info="processed_by:DataProcessor_last_chance" length="3" py_type="class 'collections.deque'" size_bytes="624" xsd_type="anyType">deque(['g', 'h', 'i'])</deque>
+    </collections>
+  </dict>
+</root>
