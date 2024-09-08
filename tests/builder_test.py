@@ -1,20 +1,20 @@
-from zoneinfo import ZoneInfo
-import array
-import calendar
-from collections import namedtuple
-import enum
-from typing import Any, Dict, Final, List, Optional, cast, final
+# from zoneinfo import ZoneInfo
+# import array
+# import calendar
+# from collections import namedtuple
+# import enum
+from typing import Any, Dict, Final, Optional
 import unittest
 import xml.etree.ElementTree as ET
-import datetime as dt
+# import datetime as dt
 from libs.builder import Builder, BuilderConfig
-from libs.attributes import AttributeFlags, AttributeFlagsNames
+from libs.attributes import AttributeFlags
 from libs.builder_baseclass import CLASS_BUILDER_CONFIG, DATA_PROCESSOR_RETURN_TYPE
 from libs.codec_wrapper import CodecWrapper
-from libs.data_processor import DataProcessor_BaseClass, DataProcessor_used_for_testing, DataProcessor_used_for_testing_use_hints
-from libs.misc import coalesce
-from dateutil import tz
-from tests.predefined_test_cases import test_case, MyClass, MySubClass, MySubSubClass
+from libs.data_processor import DataProcessorBaseClass
+# from libs.misc import coalesce
+# from dateutil import tz
+from tests.predefined_test_cases import MyClass, MySubClass, MySubSubClass
 from tests.config_test_cases import test_cases_config_rewrite_expected_output
 
 
@@ -39,13 +39,20 @@ class TestBuilder(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_custom_data_processors_using_inheritance(self):
-        class DataProcessor_MyClass(DataProcessor_BaseClass):
-            # @ final
-            @ staticmethod
+        class DataProcessor_MyClass(DataProcessorBaseClass):
+            # @final
+            @staticmethod
             def is_instance_or_derived(data: Any) -> bool:
                 return isinstance(data, MyClass)
 
-            def create_tree(self, config: CLASS_BUILDER_CONFIG, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> DATA_PROCESSOR_RETURN_TYPE:
+            def create_tree(
+                    self,
+                    config: CLASS_BUILDER_CONFIG,
+                    parent: ET.Element,
+                    data: Any,
+                    child_name: Optional[str] = None,
+                    **kwargs: object
+            ) -> DATA_PROCESSOR_RETURN_TYPE:
                 if not DataProcessor_MyClass.is_instance_or_derived(data):
                     return None
                 new_tag: str = data.__class__.__name__
@@ -59,7 +66,14 @@ class TestBuilder(unittest.TestCase):
             def is_instance_or_derived(data: Any) -> bool:
                 return isinstance(data, MySubClass)
 
-            def create_tree(self, config: CLASS_BUILDER_CONFIG, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> DATA_PROCESSOR_RETURN_TYPE:
+            def create_tree(
+                    self,
+                    config: CLASS_BUILDER_CONFIG,
+                    parent: ET.Element,
+                    data: Any,
+                    child_name: Optional[str] = None,
+                    **kwargs: object
+            ) -> DATA_PROCESSOR_RETURN_TYPE:
                 if not DataProcessor_MySubClass.is_instance_or_derived(data):
                     return None
                 current = super().create_tree(config, parent, data, child_name, **kwargs)
@@ -73,7 +87,14 @@ class TestBuilder(unittest.TestCase):
             def is_instance_or_derived(data: Any) -> bool:
                 return isinstance(data, MySubSubClass)
 
-            def create_tree(self, config: CLASS_BUILDER_CONFIG, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> DATA_PROCESSOR_RETURN_TYPE:
+            def create_tree(
+                    self,
+                    config: CLASS_BUILDER_CONFIG,
+                    parent: ET.Element,
+                    data: Any,
+                    child_name: Optional[str] = None,
+                    **kwargs: object
+            ) -> DATA_PROCESSOR_RETURN_TYPE:
                 if not DataProcessor_MySubSubClass.is_instance_or_derived(data):
                     return None
                 current = super().create_tree(config, parent, data, child_name, **kwargs)
@@ -119,13 +140,20 @@ class TestBuilder(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_custom_data_processors_without_inheritance(self):
-        class DataProcessor_MyClass(DataProcessor_BaseClass):
+        class DataProcessor_MyClass(DataProcessorBaseClass):
             # @ final
             @ staticmethod
             def is_MyClass(data: Any) -> bool:
                 return type(data) == MyClass
 
-            def create_tree(self, config: CLASS_BUILDER_CONFIG, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> DATA_PROCESSOR_RETURN_TYPE:
+            def create_tree(
+                    self,
+                    config: CLASS_BUILDER_CONFIG,
+                    parent: ET.Element,
+                    data: Any,
+                    child_name: Optional[str] = None,
+                    **kwargs: object
+            ) -> DATA_PROCESSOR_RETURN_TYPE:
                 if not DataProcessor_MyClass.is_MyClass(data):
                     return None
                 new_tag: str = data.__class__.__name__
@@ -133,13 +161,20 @@ class TestBuilder(unittest.TestCase):
                 child = config.process(parent=current, data=data.name, child_name='name')
                 return current
 
-        class DataProcessor_MySubClass(DataProcessor_BaseClass):
+        class DataProcessor_MySubClass(DataProcessorBaseClass):
             # @ final
             @ staticmethod
             def is_MySubClass(data: Any) -> bool:
                 return type(data) == MySubClass
 
-            def create_tree(self, config: CLASS_BUILDER_CONFIG, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> DATA_PROCESSOR_RETURN_TYPE:
+            def create_tree(
+                    self,
+                    config: CLASS_BUILDER_CONFIG,
+                    parent: ET.Element,
+                    data: Any,
+                    child_name: Optional[str] = None,
+                    **kwargs: object
+            ) -> DATA_PROCESSOR_RETURN_TYPE:
                 if not DataProcessor_MySubClass.is_MySubClass(data):
                     return None
                 new_tag: str = data.__class__.__name__
@@ -148,13 +183,20 @@ class TestBuilder(unittest.TestCase):
                 child = config.process(parent=current, data=data.ip_addr, child_name='ip_addr')
                 return current
 
-        class DataProcessor_MySubSubClass(DataProcessor_BaseClass):
+        class DataProcessor_MySubSubClass(DataProcessorBaseClass):
             # @ final
             @ staticmethod
             def is_MySubSubClass(data: Any) -> bool:
                 return type(data) == MySubSubClass
 
-            def create_tree(self, config: CLASS_BUILDER_CONFIG, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> DATA_PROCESSOR_RETURN_TYPE:
+            def create_tree(
+                    self,
+                    config: CLASS_BUILDER_CONFIG,
+                    parent: ET.Element,
+                    data: Any,
+                    child_name: Optional[str] = None,
+                    **kwargs: object
+            ) -> DATA_PROCESSOR_RETURN_TYPE:
                 if not DataProcessor_MySubSubClass.is_MySubSubClass(data):
                     return None
                 new_tag: str = data.__class__.__name__

@@ -1,3 +1,7 @@
+"""
+Flags for XML encoding.
+"""
+
 import enum
 from typing import Dict
 

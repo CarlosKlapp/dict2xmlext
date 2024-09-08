@@ -1,3 +1,7 @@
+"""
+Base class for configuration.
+"""
+
 from abc import ABC
 from abc import abstractmethod
 from typing import Any, Callable, Dict, Optional, Tuple, TypeAlias
@@ -7,17 +11,17 @@ import re
 from libs.codec_wrapper import CodecWrapper
 from libs.attributes import AttributeFlags, AttributeFlagsNames
 
-DATA_PROCESSOR_RETURN_TYPE: TypeAlias = Optional[ET.Element]
+DATA_PROCESSOR_RETURN_TYPE: TypeAlias = ET.Element | None
 
 
-@ dataclass
+@dataclass
 class BuilderConfig_BaseClass(ABC):
     root_label: str = 'root'
 
     override_binary_label: Optional[str] = None
     override_bool_label: Optional[str] = None
     override_calendar_label: Optional[str] = None
-    override_ChainMap_label: Optional[str] = None
+    override_chainmap_label: Optional[str] = None
     override_child_item_label: Optional[str] = None
     override_class_label: Optional[str] = None
     override_date_label: Optional[str] = None
@@ -75,11 +79,11 @@ class BuilderConfig_BaseClass(ABC):
         self.codec_binary.codec_name = 'base64'
 
     @abstractmethod
-    def _process_helper(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> DATA_PROCESSOR_RETURN_TYPE:
+    def _process_helper(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs: object) -> DATA_PROCESSOR_RETURN_TYPE:
         pass  # pragma: no cover
 
     @abstractmethod
-    def process(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs) -> DATA_PROCESSOR_RETURN_TYPE:
+    def process(self, parent: ET.Element, data: Any, child_name: Optional[str] = None, **kwargs: object) -> DATA_PROCESSOR_RETURN_TYPE:
         pass  # pragma: no cover
 
     @abstractmethod
@@ -87,11 +91,11 @@ class BuilderConfig_BaseClass(ABC):
         pass  # pragma: no cover
 
     @abstractmethod
-    def Element(self, tag: str, attrib: Optional[Dict[str, str]] = None, **kwargs) -> ET.Element:
+    def Element(self, tag: str, attrib: Optional[Dict[str, str]] = None, **kwargs: object) -> ET.Element:
         pass  # pragma: no cover
 
     @abstractmethod
-    def SubElement(self, parent: ET.Element, tag: str, attrib: Optional[Dict[str, str]] = None, **kwargs) -> ET.Element:
+    def SubElement(self, parent: ET.Element, tag: str, attrib: Optional[Dict[str, str]] = None, **kwargs: object) -> ET.Element:
         pass  # pragma: no cover
 
 

@@ -1,7 +1,8 @@
+from typing import NamedTuple
 from zoneinfo import ZoneInfo
 import array
 import calendar
-from collections import ChainMap, Counter, OrderedDict, UserDict, UserList, UserString, namedtuple, deque
+from collections import ChainMap, Counter, OrderedDict, UserDict, UserList, UserString, deque
 import enum
 import datetime as dt
 from dateutil import tz
@@ -58,7 +59,11 @@ def dummy_function() -> None:
     return None  # pragma: no cover
 
 
-Point3D = namedtuple('Point', ['x', 'y', 'z'])
+class Point3D(NamedTuple):
+    x: int
+    y: int
+    z: int
+
 
 # Driver Program
 test_case = {
