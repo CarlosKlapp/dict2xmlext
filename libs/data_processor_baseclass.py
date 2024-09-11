@@ -208,7 +208,17 @@ class DataProcessorBaseClass(DataProcessorAbstractBaseClass):
         **kwargs: object
     ) -> Dict[str, str]:
         attrflag: Final[AttributeFlags] = AttributeFlags.INC_LEN
-        return {AttributeFlagsNames[attrflag]: str(len(data))}
+        attr: Dict[str, str] = {}
+        key: Final[str] = AttributeFlagsNames[attrflag]
+        assert isinstance(data, abc.Sized)
+        assert hasattr(data, '__len__')
+        size: int
+        try:
+            size = len(data)
+        except Exception:
+            size = 0 if current.text is None else len(current.text)
+        attr[key] = str(size)
+        return attr
 
     @override
     def attr_python_data_type(
@@ -235,9 +245,8 @@ class DataProcessorBaseClass(DataProcessorAbstractBaseClass):
         attrflag: Final[AttributeFlags] = AttributeFlags.INC_SIZE_BYTES
         attr: Dict[str, str] = {}
         key: Final[str] = AttributeFlagsNames[attrflag]
-        size = sys.getsizeof(data, -1)
-        if size > 0:
-            attr[key] = str(size)
+        size = sys.getsizeof(current.text, 0)
+        attr[key] = str(size)
         return attr
 
     @override

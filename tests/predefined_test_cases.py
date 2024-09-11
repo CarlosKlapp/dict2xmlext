@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import Any, Dict, NamedTuple
 from zoneinfo import ZoneInfo
 import array
 import calendar
@@ -16,6 +16,9 @@ class MySubClass(MyClass):
     ip_addr: str = '10.2.3.4'
     port: int = 8080
     __private_instance_var: str = 'private instance variable'
+
+    def dummy(self) -> str:
+        return self.__private_instance_var
 
 
 class MySubSubClass(MySubClass):
@@ -52,7 +55,8 @@ class Perm(enum.IntFlag):
 
 class Food(enum.Flag):
     FISH = enum.auto()
-    VEGGIE = "veggie"
+    # Intentionallyt assign a string to a integer enum
+    VEGGIE = "veggie"  # type: ignore
 
 
 def dummy_function() -> None:
@@ -66,7 +70,7 @@ class Point3D(NamedTuple):
 
 
 # Driver Program
-test_case = {
+test_case: Dict[Any, Any] = {
     12: 144,
     'none-nothing': None,
     'empty-string': '',
@@ -84,7 +88,7 @@ test_case = {
             'my datetime': dt.datetime(2022, 11, 12, 14, 12, 5, 78),
             'my time': dt.time(16, 15, 14),
             'my tzinfo': tz.gettz('America/Chicago'),  # cSpell:ignore gettz
-            'my zoneinfo': ZoneInfo('America/Chicago'),
+            'my zoneinfo': ZoneInfo('America/New_York'),
             'my timedelta': dt.timedelta(days=34, hours=13, minutes=46, seconds=57, milliseconds=675, microseconds=423),
             'my timedelta -9 hrs': dt.timedelta(hours=-9),
             'my timedelta +7 hrs': dt.timedelta(hours=7),

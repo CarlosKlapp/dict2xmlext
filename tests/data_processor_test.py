@@ -1,3 +1,10 @@
+# flake8: noqa: F841
+#   F841 - unused variables
+# pyright: reportUnusedVariable=false
+# pylint: disable=W0612,C0115,C0116,C0301
+#   W0612 - unused variables
+#   C0115,C0116 - missing docstring
+#   C0301 - line too long
 """
 Unit tests for data processing code
 """
@@ -7,10 +14,12 @@ import datetime as dt
 import calendar
 import sys
 import unittest
+import tzlocal
 from typing import NamedTuple
 from zoneinfo import ZoneInfo
 from uuid import UUID
 from dateutil import tz
+# import os
 # from typing import Optional
 from libs.builder import Builder, BuilderConfig
 from libs.attributes import AttributeFlags, AttributeFlagsNames
@@ -93,41 +102,43 @@ class TestDataProcessor(unittest.TestCase):
 
     def baseclass_test_helper(self, dp: DataProcessorBaseClass):
         config = BuilderConfig()
-        et = config.Element(tag=config.root_label)
+        et_parent = config.Element(tag=config.root_label)
+        et_current = config.Element(tag='dummy')
 
         self.assertIsNone(dp.get_field_type_hint('dummy'))
         self.assertIsNone(dp.get_format_string_hint('dummy'))
 
-        d = dp.attr_alt_id(config, et, et, 'dummy')
+        d = dp.attr_alt_id(config, et_parent, et_current, 'dummy')
         self.assertListEqual(list(d.keys()), [AttributeFlagsNames[AttributeFlags.INC_ALT_ID]])
         self.assertTrue(self.is_valid_uuid(list(d.values())[0]))
 
-        d = dp.attr_binary_encoding(config, et, et, 'dummy')
+        d = dp.attr_binary_encoding(config, et_parent, et_current, 'dummy')
         self.assertListEqual(list(d.keys()), [AttributeFlagsNames[AttributeFlags.INC_BINARY_ENCODING]])
         self.assertTrue(list(d.values())[0] == 'base64')
 
-        d = dp.attr_field_type_hint(config, et, et, 'dummy')
+        d = dp.attr_field_type_hint(config, et_parent, et_current, 'dummy')
         self.assertDictEqual(d, {})
 
-        d = dp.attr_format_string_hint(config, et, et, 'dummy')
+        d = dp.attr_format_string_hint(config, et_parent, et_current, 'dummy')
         self.assertDictEqual(d, {})
 
-        d = dp.attr_len(config, et, et, 'dummy')
+        d = dp.attr_len(config, et_parent, et_current, 'dummy')
         self.assertDictEqual(d, {AttributeFlagsNames[AttributeFlags.INC_LEN]: str(len('dummy'))})
 
-        d = dp.attr_python_data_type(config, et, et, 'dummy')
+        d = dp.attr_python_data_type(config, et_parent, et_current, 'dummy')
         self.assertDictEqual(d, {AttributeFlagsNames[AttributeFlags.INC_PYTHON_DATA_TYPE]: str(type('dummy'))[1:-1]})
 
-        d = dp.attr_size_bytes(config, et, et, 'dummy')
-        self.assertDictEqual(d, {AttributeFlagsNames[AttributeFlags.INC_SIZE_BYTES]: str(sys.getsizeof('dummy'))})
+        d = dp.attr_size_bytes(config, et_parent, et_current, 'dummy')
+        self.assertDictEqual(d, {AttributeFlagsNames[AttributeFlags.INC_SIZE_BYTES]: str(sys.getsizeof(et_current.text))})
 
-        d = dp.attr_xsd_data_type(config, et, et, 'dummy')
+        d = dp.attr_xsd_data_type(config, et_parent, et_current, 'dummy')
         self.assertDictEqual(d, {AttributeFlagsNames[AttributeFlags.INC_XSD_DATA_TYPE]: 'anyType'})
 
     def test_add_attributes(self):
         config = BuilderConfig()
-        etParent = config.Element(tag=config.root_label)
-        et = ET.SubElement(etParent, 'test')
+        et_parent = config.Element(tag=config.root_label)
+        et_current = ET.SubElement(et_parent, 'test')
+
         dp = DataProcessor_used_for_testing()
 
     def test_is_bool(self):
@@ -210,7 +221,6 @@ class TestDataProcessor(unittest.TestCase):
     def test_is_numeric(self):
         func = DataProcessorBaseClass.is_numeric
         resp = [func(x[0]) for x in self.test_data]
-        dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, True, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
         self.assertListEqual(resp, expected)
 
@@ -261,8 +271,8 @@ class TestDataProcessor(unittest.TestCase):
         self.baseclass_test_helper(dp)
 
         config = BuilderConfig()
-        etParent = config.Element(tag=config.root_label)
-        self.assertIsNone(dp.process(config, etParent, 'dummy'))
+        et_parent = config.Element(tag=config.root_label)
+        self.assertIsNone(dp.process(config, et_parent, 'dummy'))
 
     def test_DataProcessor_with_hints(self):
         dp = DataProcessor_used_for_testing_use_hints()
@@ -270,12 +280,13 @@ class TestDataProcessor(unittest.TestCase):
         self.assertEqual(dp.get_format_string_hint('dummy'), 'test- get_format_string_hint')
 
         config = BuilderConfig()
-        et = config.Element(tag=config.root_label)
+        et_parent = config.Element(tag=config.root_label)
+        et_current = config.Element(tag='dummy')
 
-        d = dp.attr_field_type_hint(config, et, et, 'dummy')
+        d = dp.attr_field_type_hint(config, et_parent, et_current, 'dummy')
         self.assertDictEqual(d, {AttributeFlagsNames[AttributeFlags.INC_FIELD_TYPE_HINT]: 'test- get_field_type_hint'})
 
-        d = dp.attr_format_string_hint(config, et, et, 'dummy')
+        d = dp.attr_format_string_hint(config, et_parent, et_current, 'dummy')
         self.assertDictEqual(d, {AttributeFlagsNames[AttributeFlags.INC_FORMAT_STRING_HINT]: 'test- get_format_string_hint'})
 
     def test_DataProcessor_tzinfo(self):
@@ -293,7 +304,7 @@ class TestDataProcessor(unittest.TestCase):
         assert e is not None
         ET.indent(e)
         result = ET.tostring(e, encoding='unicode')
-        self.assertEqual(result, '<root>\n  <tzinfo>/etc/localtime</tzinfo>\n</root>')
+        self.assertEqual(result, f'<root>\n  <tzinfo>{tzlocal.get_localzone_name()}</tzinfo>\n</root>')
 
     def test_DataProcessor_binary_encoder(self):
         dp = DataProcessor_binary()
@@ -303,8 +314,8 @@ class TestDataProcessor(unittest.TestCase):
         cw = CodecWrapper()
         cw.codec_name = 'zip'
         config.codec_binary = cw
-        etParent = config.Element(tag=config.root_label)
-        e = dp.process(config, etParent, b'dummy-dummy-dummy-dummy-dummy-dummy-dummy-dummy-dummy-dummy-dummy')
+        et_parent = config.Element(tag=config.root_label)
+        e = dp.process(config, et_parent, b'dummy-dummy-dummy-dummy-dummy-dummy-dummy-dummy-dummy-dummy-dummy')
         self.assertIsNotNone(e)
         assert e is not None
         ET.indent(e)

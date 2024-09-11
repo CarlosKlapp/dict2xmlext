@@ -14,7 +14,7 @@ from libs.codec_wrapper import CodecWrapper
 from libs.data_processor import DataProcessorBaseClass
 # from libs.misc import coalesce
 # from dateutil import tz
-from tests.predefined_test_cases import MyClass, MySubClass, MySubSubClass
+from tests.predefined_test_cases import MyClass, MySubClass, MySubSubClass, test_case
 from tests.config_test_cases import test_cases_config_rewrite_expected_output
 
 
@@ -30,7 +30,11 @@ class TestBuilder(unittest.TestCase):
         result = ET.tostring(e, encoding='unicode')
 
         if test_cases_config_rewrite_expected_output:
-            with open('./tests/expected_test_builder.INC_ALL_DEBUG.xml', 'w', encoding="utf-8") as f:
+            with open(
+                './tests/expected_test_builder.INC_ALL_DEBUG.xml',
+                'w',
+                encoding="utf-8"
+            ) as f:
                 f.write(result)
 
         with open('./tests/expected_test_builder.INC_ALL_DEBUG.xml', 'r', encoding="utf-8") as f:
@@ -57,7 +61,7 @@ class TestBuilder(unittest.TestCase):
                     return None
                 new_tag: str = data.__class__.__name__
                 current = config.SubElement(parent, new_tag)
-                child = config.process(parent=current, data=data.name, child_name='name')
+                config.process(parent=current, data=data.name, child_name='name')
                 return current
 
         class DataProcessor_MySubClass(DataProcessor_MyClass):
@@ -77,8 +81,11 @@ class TestBuilder(unittest.TestCase):
                 if not DataProcessor_MySubClass.is_instance_or_derived(data):
                     return None
                 current = super().create_tree(config, parent, data, child_name, **kwargs)
-                assert current is not None  # should never happen since we already verified we are a descendant
-                child = config.process(parent=current, data=data.ip_addr, child_name='ip_addr')
+                # should never happen since we already verified we are a descendant
+                assert current is not None
+                config.process(parent=current, data=data.ip_addr, child_name='ip_addr')
+                config.process(parent=current, data=data.port, child_name='port')
+                config.process(parent=current, data=data._MySubClass__private_instance_var, child_name='__private_instance_var')
                 return current
 
         class DataProcessor_MySubSubClass(DataProcessor_MySubClass):
@@ -98,8 +105,10 @@ class TestBuilder(unittest.TestCase):
                 if not DataProcessor_MySubSubClass.is_instance_or_derived(data):
                     return None
                 current = super().create_tree(config, parent, data, child_name, **kwargs)
-                assert current is not None  # should never happen since we already verified we are a descendant
-                child = config.process(parent=current, data=data.geolocation, child_name='geolocation')
+                # should never happen since we already verified we are a descendant
+                assert current is not None
+                config.process(parent=current, data=data.geolocation, child_name='geolocation')
+                config.process(parent=current, data=data.instance_var, child_name='instance_var')
                 return current
 
         # Verify the "is_" functions are recognizing the hierarchy
@@ -122,7 +131,9 @@ class TestBuilder(unittest.TestCase):
         config = BuilderConfig()
         # Caution: when adding to the custom processor list and relying on inheritance,
         #   the child/leaf classes should be first and the base classes at the end.
-        config.custom_pre_processors.extend([DataProcessor_MySubSubClass(), DataProcessor_MySubClass(), DataProcessor_MyClass()])
+        config.custom_pre_processors.extend(
+            [DataProcessor_MySubSubClass(), DataProcessor_MySubClass(), DataProcessor_MyClass()]
+        )
         config.attr_flags = AttributeFlags.INC_ALL_DEBUG
         builder = Builder(config)
 
@@ -131,10 +142,18 @@ class TestBuilder(unittest.TestCase):
         result = ET.tostring(e, encoding='unicode')
 
         if test_cases_config_rewrite_expected_output:
-            with open('./tests/expected_test_custom_data_processors_using_inheritance.INC_ALL_DEBUG.xml', 'w', encoding="utf-8") as f:
+            with open(
+                './tests/expected_test_custom_data_processors_using_inheritance.INC_ALL_DEBUG.xml',
+                'w',
+                encoding="utf-8"
+            ) as f:
                 f.write(result)
 
-        with open('./tests/expected_test_custom_data_processors_using_inheritance.INC_ALL_DEBUG.xml', 'r', encoding="utf-8") as f:
+        with open(
+            './tests/expected_test_custom_data_processors_using_inheritance.INC_ALL_DEBUG.xml',
+            'r',
+            encoding="utf-8"
+        ) as f:
             expected = f.read()
 
         self.assertEqual(result, expected)
@@ -144,7 +163,7 @@ class TestBuilder(unittest.TestCase):
             # @ final
             @ staticmethod
             def is_MyClass(data: Any) -> bool:
-                return type(data) == MyClass
+                return isinstance(data, MyClass)
 
             def create_tree(
                     self,
@@ -158,14 +177,14 @@ class TestBuilder(unittest.TestCase):
                     return None
                 new_tag: str = data.__class__.__name__
                 current = config.SubElement(parent, new_tag)
-                child = config.process(parent=current, data=data.name, child_name='name')
+                config.process(parent=current, data=data.name, child_name='name')
                 return current
 
         class DataProcessor_MySubClass(DataProcessorBaseClass):
             # @ final
             @ staticmethod
             def is_MySubClass(data: Any) -> bool:
-                return type(data) == MySubClass
+                return isinstance(data, MySubClass)
 
             def create_tree(
                     self,
@@ -179,15 +198,17 @@ class TestBuilder(unittest.TestCase):
                     return None
                 new_tag: str = data.__class__.__name__
                 current = config.SubElement(parent, new_tag)
-                child = config.process(parent=current, data=data.name, child_name='name')
-                child = config.process(parent=current, data=data.ip_addr, child_name='ip_addr')
+                config.process(parent=current, data=data.name, child_name='name')
+                config.process(parent=current, data=data.ip_addr, child_name='ip_addr')
+                config.process(parent=current, data=data.port, child_name='port')
+                config.process(parent=current, data=data._MySubClass__private_instance_var, child_name='__private_instance_var')
                 return current
 
         class DataProcessor_MySubSubClass(DataProcessorBaseClass):
             # @ final
             @ staticmethod
             def is_MySubSubClass(data: Any) -> bool:
-                return type(data) == MySubSubClass
+                return isinstance(data, MySubSubClass)
 
             def create_tree(
                     self,
@@ -201,9 +222,12 @@ class TestBuilder(unittest.TestCase):
                     return None
                 new_tag: str = data.__class__.__name__
                 current = config.SubElement(parent, new_tag)
-                child = config.process(parent=current, data=data.name, child_name='name')
-                child = config.process(parent=current, data=data.ip_addr, child_name='ip_addr')
-                child = config.process(parent=current, data=data.geolocation, child_name='geolocation')
+                config.process(parent=current, data=data.name, child_name='name')
+                config.process(parent=current, data=data.ip_addr, child_name='ip_addr')
+                config.process(parent=current, data=data.port, child_name='port')
+                config.process(parent=current, data=data._MySubClass__private_instance_var, child_name='__private_instance_var')
+                config.process(parent=current, data=data.geolocation, child_name='geolocation')
+                config.process(parent=current, data=data.instance_var, child_name='instance_var')
                 return current
 
         # Verify the "is_" functions are recognizing the hierarchy
@@ -212,12 +236,12 @@ class TestBuilder(unittest.TestCase):
         my_sub_sub_class = MySubSubClass()
 
         self.assertTrue(DataProcessor_MyClass.is_MyClass(my_class))
-        self.assertFalse(DataProcessor_MyClass.is_MyClass(my_sub_class))
-        self.assertFalse(DataProcessor_MyClass.is_MyClass(my_sub_sub_class))
+        self.assertTrue(DataProcessor_MyClass.is_MyClass(my_sub_class))
+        self.assertTrue(DataProcessor_MyClass.is_MyClass(my_sub_sub_class))
 
         self.assertFalse(DataProcessor_MySubClass.is_MySubClass(my_class))
         self.assertTrue(DataProcessor_MySubClass.is_MySubClass(my_sub_class))
-        self.assertFalse(DataProcessor_MySubClass.is_MySubClass(my_sub_sub_class))
+        self.assertTrue(DataProcessor_MySubClass.is_MySubClass(my_sub_sub_class))
 
         self.assertFalse(DataProcessor_MySubSubClass.is_MySubSubClass(my_class))
         self.assertFalse(DataProcessor_MySubSubClass.is_MySubSubClass(my_sub_class))
@@ -226,7 +250,9 @@ class TestBuilder(unittest.TestCase):
         config = BuilderConfig()
         # Caution: when adding to the custom processor list and relying on inheritance,
         #   the child/leaf classes should be first and the base classes at the end.
-        config.custom_pre_processors.extend([DataProcessor_MySubSubClass(), DataProcessor_MySubClass(), DataProcessor_MyClass()])
+        config.custom_pre_processors.extend(
+            [DataProcessor_MySubSubClass(), DataProcessor_MySubClass(), DataProcessor_MyClass()]
+        )
         config.attr_flags = AttributeFlags.INC_ALL_DEBUG
         builder = Builder(config)
 
@@ -235,10 +261,18 @@ class TestBuilder(unittest.TestCase):
         result = ET.tostring(e, encoding='unicode')
 
         if test_cases_config_rewrite_expected_output:
-            with open('./tests/expected_test_custom_data_processors_without_inheritance.INC_ALL_DEBUG.xml', 'w', encoding="utf-8") as f:
+            with open(
+                './tests/expected_test_custom_data_processors_without_inheritance.INC_ALL_DEBUG.xml',
+                'w',
+                encoding="utf-8"
+            ) as f:
                 f.write(result)
 
-        with open('./tests/expected_test_custom_data_processors_without_inheritance.INC_ALL_DEBUG.xml', 'r', encoding="utf-8") as f:
+        with open(
+            './tests/expected_test_custom_data_processors_without_inheritance.INC_ALL_DEBUG.xml',
+            'r',
+            encoding="utf-8"
+        ) as f:
             expected = f.read()
 
         self.assertEqual(result, expected)

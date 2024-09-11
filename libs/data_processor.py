@@ -1,6 +1,8 @@
 """
 Code to process and transform data into XML.
 """
+# from collections import abc
+# from enum import Enum
 from typing import Any, Optional, override
 import xml.etree.ElementTree as ET
 import datetime as dt
@@ -8,8 +10,10 @@ import re
 import inspect
 # import builtins
 # from libs.attributes import AttributeFlags, AttributeFlagsNames
+# from libs.attributes import AttributeFlags
 from libs.builder_baseclass import CLASS_BUILDER_CONFIG, DATA_PROCESSOR_RETURN_TYPE
 from libs.data_processor_baseclass import DataProcessorBaseClass
+from libs.misc import convert_windows_tz_name_to_iani_name
 
 
 class DataProcessor_last_chance(DataProcessorBaseClass):
@@ -491,13 +495,20 @@ class DataProcessor_tzinfo(DataProcessorBaseClass):
             data: Any,
             **kwargs: object
     ) -> Optional[str]:
-        idx = data._filename.find('zoneinfo')
-        if idx < 0:
-            # not found
-            text = data._filename
-        else:
-            # found
-            text = data._filename[idx + len('zoneinfo/'):]
+        idx: int = -1
+        text: str = 'unknown'
+        if hasattr(data, '_filename'):
+            idx = data._filename.find('zoneinfo')
+            if idx < 0:
+                # not found
+                text = data._filename
+            else:
+                # found
+                text = data._filename[idx + len('zoneinfo/'):]
+        elif hasattr(data, '_tznames'):
+            if len(data._tznames) > 0:
+                text = convert_windows_tz_name_to_iani_name(data._tznames[0])
+
         return text
 
 

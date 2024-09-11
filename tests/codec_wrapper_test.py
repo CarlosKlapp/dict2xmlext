@@ -18,7 +18,7 @@ class TestCodecWrapper(unittest.TestCase):
         cw.codec_name = 'unknown_codec'
         self.assertEqual(cw.codec_name, 'unknown_codec')
         with self.assertRaises(LookupError) as context:
-            codec_tmp = cw.codec
+            print(cw.codec)  # try to retrieve the codec and generate an exception
         self.assertEqual('unknown encoding: unknown_codec', str(context.exception))
 
     def test_known_codec_name(self):
