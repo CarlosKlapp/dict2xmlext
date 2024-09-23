@@ -1,4 +1,4 @@
-from typing import Any, Dict, NamedTuple
+from typing import Any, Dict, List, NamedTuple
 from zoneinfo import ZoneInfo
 import array
 import calendar
@@ -37,7 +37,7 @@ my_sub_class = MySubClass()
 my_sub_sub_class = MySubSubClass()
 
 
-list_of_my_classes = [my_class, my_sub_class, my_sub_sub_class]
+list_of_my_classes: List[MyClass] = [my_class, my_sub_class, my_sub_sub_class]
 
 
 class Color(enum.Enum):
@@ -81,8 +81,8 @@ test_case: Dict[Any, Any] = {
     'sub': {
         'sub1': 'v1',
         'sub2': 'v2',
-        'l1': ['a', 'b', 'c'],
-        'dt': {
+        'list1': ['a', 'b', 'c'],
+        'dictionary': {
             'my timezone': dt.timezone(dt.timedelta(hours=-6), 'test'),
             'my date': dt.date(2022, 11, 12),
             'my datetime': dt.datetime(2022, 11, 12, 14, 12, 5, 78),
@@ -107,9 +107,13 @@ test_case: Dict[Any, Any] = {
         'bytearray': bytearray.fromhex('02 fe cc dd 32 14')
     },
     'sequences': {
-        'list': [323],
+        'list': [323, 455, 7687],
+        'list_single': [12],
+        'list_empty': [],
         'tuple': (12345, 54321, 'hello!'),
-        'set': {453},
+        'set': {453, 456, 534},
+        'set_single': {453},
+        'set_empty': {},
         'range': range(10),
         'array': array.array('i', [1, 2, 3]),
         'dict': {'foo': 'bar'},

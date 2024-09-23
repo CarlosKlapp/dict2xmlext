@@ -1,40 +1,42 @@
 """
 Code to process and transform data into XML.
 """
-# from collections import abc
-# from enum import Enum
+# pylint: disable=C0103; invalid-name
 from typing import Any, Optional, override
-import xml.etree.ElementTree as ET
 import datetime as dt
 import re
 import inspect
-# import builtins
-# from libs.attributes import AttributeFlags, AttributeFlagsNames
-# from libs.attributes import AttributeFlags
-from libs.builder_baseclass import CLASS_BUILDER_CONFIG, DATA_PROCESSOR_RETURN_TYPE
-from libs.data_processor_baseclass import DataProcessorBaseClass
+from libs.abstract_baseclasses import (
+    DataProcessorAbstractBaseClass,
+    DataProcessorReturnTypeAlias,
+    XmlElementTypeAlias
+)
 from libs.misc import convert_windows_tz_name_to_iani_name
 
 
-class DataProcessor_last_chance(DataProcessorBaseClass):
+class DataProcessor_last_chance(DataProcessorAbstractBaseClass):
+    """
+    This is the final chance to encode the data. No other data processor was able to
+    encode the data. Use this encoder.
+    """
+
     _expr = re.compile('<(.*) at 0x[0-9a-f]{12}>', re.IGNORECASE)
 
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'unknown-object'
 
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_unknown_object_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_unknown_object_label
 
     def is_expected_data_type(self, data: Any) -> bool:
         return True
 
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
         text = str(data)
         # Objects are typically in the format '<calendar.Calendar object at 0x7ff56b9035b0>'
@@ -47,46 +49,52 @@ class DataProcessor_last_chance(DataProcessorBaseClass):
         return text
 
 
-class DataProcessor_bool(DataProcessorBaseClass):
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+class DataProcessor_bool(DataProcessorAbstractBaseClass):
+    """
+    Encode boolean values.
+    """
+
+    def get_default_element_name(self, data: Any) -> str:
         return 'bool'
 
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_bool_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_bool_label
 
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_bool(data)
+        return self._classifier.is_bool(data)
 
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
         return 'True' if data else 'False'
 
 
-class DataProcessor_binary(DataProcessorBaseClass):
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+class DataProcessor_binary(DataProcessorAbstractBaseClass):
+    """
+    Encode binary values.
+    """
+
+    def get_default_element_name(self, data: Any) -> str:
         return 'binary'
 
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_binary_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_binary_label
 
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_binary(data)
+        return self._classifier.is_binary(data)
 
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
-        codec = config.codec_binary.codec
+        codec = self.config.codec_binary.codec
         encoded_text, _ = codec.encode(data)
         if encoded_text.isascii():
             text = encoded_text.decode().strip()
@@ -95,367 +103,434 @@ class DataProcessor_binary(DataProcessorBaseClass):
         return text
 
 
-class DataProcessor_calendar(DataProcessorBaseClass):
-    '''calendar is an abstract base class.'''
+class DataProcessor_calendar(DataProcessorAbstractBaseClass):
+    """
+    Encode a calendar value.
 
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    calendar is an abstract base class.
+    """
+
+    def get_default_element_name(self, data: Any) -> str:
         return 'calendar'
 
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_calendar_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_calendar_label
 
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_calendar(data)
+        return self._classifier.is_calendar(data)
 
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
-        # TODO: This isn't useful. Put here as placeholder for someone to override.
+        # TODO: This isn't useful value. Put here as placeholder for someone to override.
         return 'calendar object'
 
 
-class DataProcessor_ChainMap(DataProcessorBaseClass):
+class DataProcessor_ChainMap(DataProcessorAbstractBaseClass):
+    """
+    Encode a ChainMap value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'ChainMap'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_chainmap_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_chainmap_label
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_chainmap(data)
+        return self._classifier.is_chainmap(data)
 
     @override
-    def recursively_process_any_nested_objects(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _recursively_process_any_nested_objects(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        child_name: Optional[str] = None,
+        **kwargs: object
     ) -> None:
-        config.process(parent=current, data=data.maps)
+        self._process(
+            config=self.config,
+            parent=current,
+            data=data.maps,
+            child_name=None
+        )
 
 
-class DataProcessor_dict(DataProcessorBaseClass):
+class DataProcessor_dict(DataProcessorAbstractBaseClass):
+    """
+    Encode a dict value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'dict'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_dict_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_dict_label
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_dict(data)
+        return self._classifier.is_dict(data)
 
     @override
-    def recursively_process_any_nested_objects(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _recursively_process_any_nested_objects(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        child_name: Optional[str] = None,
+        **kwargs: object
     ) -> None:
         for k, v in data.items():
-            config.process(parent=current, data=v, child_name=str(k))
+            self._process(
+                config=self.config,
+                parent=current,
+                data=v,
+                child_name=str(k)
+            )
 
 
-class DataProcessor_enum(DataProcessorBaseClass):
+class DataProcessor_enum(DataProcessorAbstractBaseClass):
+    """
+    Encode an enum value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'enum'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_enum_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_enum_label
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_enum(data)
+        return self._classifier.is_enum(data)
 
     @override
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
         return str(data.value)
 
 
-class DataProcessor_namedtuple(DataProcessorBaseClass):
+class DataProcessor_namedtuple(DataProcessorAbstractBaseClass):
+    """
+    Encode a named tuple value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'namedtuple'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_namedtuple_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_namedtuple_label
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_namedtuple(data)
+        return self._classifier.is_namedtuple(data)
 
     @override
-    def get_field_type_hint(self, data: Any, **kwargs: object) -> Optional[str]:
+    def _get_field_type_hint(self, data: Any, **kwargs: object) -> Optional[str]:
         return 'namedtuple'
 
     @override
-    def recursively_process_any_nested_objects(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _recursively_process_any_nested_objects(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        child_name: Optional[str] = None,
+        **kwargs: object
     ) -> None:
         for name, value in data._asdict().items():
-            config.process(parent=current, data=value, child_name=name)
+            self._process(
+                config=self.config,
+                parent=current,
+                data=value,
+                child_name=name
+            )
 
 
-class DataProcessor_none(DataProcessorBaseClass):
+class DataProcessor_none(DataProcessorAbstractBaseClass):
+    """
+    Encode a None value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'none'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_none_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_none_label
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_none(data)
+        return self._classifier.is_none(data)
 
 
-class DataProcessor_numeric(DataProcessorBaseClass):
+class DataProcessor_numeric(DataProcessorAbstractBaseClass):
+    """
+    Encode a numeric value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'numeric'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_numeric_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_numeric_label
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_numeric(data)
+        return self._classifier.is_numeric(data)
 
     @override
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
         return str(data)
 
 
-class DataProcessor_sequence(DataProcessorBaseClass):
+class DataProcessor_sequence(DataProcessorAbstractBaseClass):
+    """
+    Encode a sequence value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'sequence'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_sequence_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_sequence_label
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_sequence(data)
+        return self._classifier.is_sequence(data)
 
     @override
-    def recursively_process_any_nested_objects(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _recursively_process_any_nested_objects(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        child_name: Optional[str] = None,
+        **kwargs: object
     ) -> None:
         for v in data:
-            config.process(parent=current, data=v, child_name=config.override_child_item_label)
+            self._process(
+                config=self.config,
+                parent=current,
+                data=v,
+                child_name=self.config.override_child_item_label
+            )
 
 
-class DataProcessor_str(DataProcessorBaseClass):
+class DataProcessor_str(DataProcessorAbstractBaseClass):
+    """
+    Encode a str value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'str'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_str_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_str_label
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_str(data)
+        return self._classifier.is_str(data)
 
     @override
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
         return str(data)
 
 
-class DataProcessor_date(DataProcessorBaseClass):
+class DataProcessor_date(DataProcessorAbstractBaseClass):
+    """
+    Encode a date value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'date'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_date_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_date_label
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_date(data)
+        return self._classifier.is_date(data)
 
     @override
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
         return str(data)
 
     @override
-    def get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
+    def _get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
         return 'YYYY-MM-DD'
 
 
-class DataProcessor_datetime(DataProcessorBaseClass):
+class DataProcessor_datetime(DataProcessorAbstractBaseClass):
+    """
+    Encode a datetime value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'datetime'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_datetime_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_datetime_label
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_datetime(data)
+        return self._classifier.is_datetime(data)
 
     @override
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
         return str(data.isoformat())
 
     @override
-    def get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
+    def _get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
         return 'YYYY-MM-DDTHH:MM:SS.ffffff'  # cSpell: ignore DDTHH
 
 
-class DataProcessor_time(DataProcessorBaseClass):
+class DataProcessor_time(DataProcessorAbstractBaseClass):
+    """
+    Encode a time value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'time'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_time_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_time_label
 
     @override
-    def get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
+    def _get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
         return 'HH:MM:SS[.ssssss]'
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_time(data)
+        return self._classifier.is_time(data)
 
     @override
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
         return str(data)
 
 
-class DataProcessor_timedelta(DataProcessorBaseClass):
+class DataProcessor_timedelta(DataProcessorAbstractBaseClass):
+    """
+    Encode a timedelta value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'timedelta'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_timedelta_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_timedelta_label
 
     @override
-    def get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
+    def _get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
         return '[XX day[s], ]HH:MM:SS[.ssssss]'
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_timedelta(data)
+        return self._classifier.is_timedelta(data)
 
     @override
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
         return str(data)
 
 
-class DataProcessor_timezone(DataProcessorBaseClass):
+class DataProcessor_timezone(DataProcessorAbstractBaseClass):
+    """
+    Encode a timezone value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'timezone'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_zoneinfo_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_zoneinfo_label
 
     @override
-    def get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
+    def _get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
         return 'UTC±HH:MM'
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_timezone(data)
+        return self._classifier.is_timezone(data)
 
     @override
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
         delta = data.utcoffset(dt.datetime.now())
         hours = delta.days * 24 + delta.seconds // 3600
@@ -463,88 +538,98 @@ class DataProcessor_timezone(DataProcessorBaseClass):
         return f'UTC+{hours:02}:{minutes:02}' if hours >= 0 else f'UTC{hours:02}:{minutes:02}'
 
 
-class DataProcessor_tzinfo(DataProcessorBaseClass):
-    '''tzinfo is an abstract base class.'''
+class DataProcessor_tzinfo(DataProcessorAbstractBaseClass):
+    """
+    Encode a tzinfo value.
+
+    tzinfo is an abstract base class.
+    """
 
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'tzinfo'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_tzinfo_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_tzinfo_label
 
     @override
-    def get_field_comment(self, data: Any, **kwargs: object) -> Optional[str]:
+    def _get_field_comment(self, data: Any, **kwargs: object) -> Optional[str]:
         return 'IANA time zone database key (e.g. America/New_York, Europe/Paris or Asia/Tokyo)'
 
     @override
-    def get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
+    def _get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
         return 'Zone/City'
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_tzinfo(data)
+        return self._classifier.is_tzinfo(data)
 
     @override
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
         idx: int = -1
         text: str = 'unknown'
         if hasattr(data, '_filename'):
-            idx = data._filename.find('zoneinfo')
+            idx = data._filename.find('zoneinfo')  # pylint: disable=W0212; protected-access
             if idx < 0:
                 # not found
-                text = data._filename
+                text = data._filename  # pylint: disable=W0212; protected-access
             else:
                 # found
-                text = data._filename[idx + len('zoneinfo/'):]
+                text = data._filename[idx + len('zoneinfo/'):]  # pylint: disable=W0212; protected-access
         elif hasattr(data, '_tznames'):
-            if len(data._tznames) > 0:
-                text = convert_windows_tz_name_to_iani_name(data._tznames[0])
+            if len(data._tznames) > 0:  # pylint: disable=W0212; protected-access
+                text = convert_windows_tz_name_to_iani_name(data._tznames[0])  # pylint: disable=W0212; protected-access
 
         return text
 
 
-class DataProcessor_zoneinfo(DataProcessorBaseClass):
+class DataProcessor_zoneinfo(DataProcessorAbstractBaseClass):
+    """
+    Encode a zoneinfo value.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'zoneinfo'
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_zoneinfo_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_zoneinfo_label
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
-        return self.is_zoneinfo(data)
+        return self._classifier.is_zoneinfo(data)
 
     @override
-    def get_textual_representation_of_data(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _get_textual_representation_of_data(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        **kwargs: object
     ) -> Optional[str]:
         return str(data.key)
 
 
-class DataProcessor_post_processor_for_classes(DataProcessorBaseClass):
+class DataProcessor_post_processor_for_classes(DataProcessorAbstractBaseClass):
+    """
+    Encode an object.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return data.__class__.__name__
 
     @override
-    def get_element_name_from_config(self, config: CLASS_BUILDER_CONFIG) -> Optional[str]:
-        return config.override_class_label
+    def _get_element_name_from_config(self) -> Optional[str]:
+        return self.config.override_class_label
 
     @override
     def is_expected_data_type(self, data: Any) -> bool:
@@ -555,13 +640,13 @@ class DataProcessor_post_processor_for_classes(DataProcessorBaseClass):
             not inspect.ismethod(data)
 
     @override
-    def recursively_process_any_nested_objects(
-            self,
-            config: CLASS_BUILDER_CONFIG,
-            parent: ET.Element,
-            current: ET.Element,
-            data: Any,
-            **kwargs: object
+    def _recursively_process_any_nested_objects(
+        self,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
+        data: Any,
+        child_name: Optional[str] = None,
+        **kwargs: object
     ) -> None:
         for attr in dir(data):
             if attr.startswith("__") and attr.endswith("__"):  # skip the 'magic' objects
@@ -570,12 +655,21 @@ class DataProcessor_post_processor_for_classes(DataProcessorBaseClass):
             val = getattr(data, attr)
             if callable(val):  # skip methods
                 continue
-            config.process(parent=current, data=val, child_name=attr_name)
+            self._process(
+                config=self.config,
+                parent=current,
+                data=val,
+                child_name=attr_name
+            )
 
 
-class DataProcessor_used_for_testing(DataProcessorBaseClass):
+class DataProcessor_used_for_testing(DataProcessorAbstractBaseClass):
+    """
+    Used for testing.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'DataProcessor_used_for_testing'
 
     @override
@@ -583,42 +677,33 @@ class DataProcessor_used_for_testing(DataProcessorBaseClass):
         return True
 
     @override
-    def get_textual_representation_of_data(
+    def _get_textual_representation_of_data(
         self,
-        config: CLASS_BUILDER_CONFIG,
-        parent: ET.Element,
-        current: ET.Element,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
         data: Any,
         **kwargs: object
     ) -> Optional[str]:
         return None
 
     @override
-    def recursively_process_any_nested_objects(
+    def _try_converting(
         self,
-        config: CLASS_BUILDER_CONFIG,
-        parent: ET.Element,
-        current: ET.Element,
-        data: Any,
-        **kwargs: object
-    ) -> None:
-        pass
-
-    @override
-    def create_tree(
-        self,
-        config: CLASS_BUILDER_CONFIG,
-        parent: ET.Element,
+        parent: XmlElementTypeAlias,
         data: Any,
         child_name: Optional[str] = None,
         **kwargs: object
-    ) -> DATA_PROCESSOR_RETURN_TYPE:
+    ) -> DataProcessorReturnTypeAlias:
         return None  # pragma: no coverage
 
 
-class DataProcessor_used_for_testing_use_hints(DataProcessorBaseClass):
+class DataProcessor_used_for_testing_use_hints(DataProcessorAbstractBaseClass):
+    """
+    Used for testing.
+    """
+
     @override
-    def get_default_element_name(self, config: CLASS_BUILDER_CONFIG, data: Any) -> str:
+    def get_default_element_name(self, data: Any) -> str:
         return 'DataProcessor_used_for_testing_use_hints'
 
     @override
@@ -626,31 +711,29 @@ class DataProcessor_used_for_testing_use_hints(DataProcessorBaseClass):
         return True
 
     @override
-    def get_textual_representation_of_data(
+    def _get_textual_representation_of_data(
         self,
-        config: CLASS_BUILDER_CONFIG,
-        parent: ET.Element,
-        current: ET.Element,
+        parent: XmlElementTypeAlias,
+        current: XmlElementTypeAlias,
         data: Any,
         **kwargs: object
     ) -> Optional[str]:
         return None
 
     @override
-    def get_field_type_hint(self, data: Any, **kwargs: object) -> Optional[str]:
+    def _get_field_type_hint(self, data: Any, **kwargs: object) -> Optional[str]:
         return 'test- get_field_type_hint'
 
     @override
-    def get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
+    def _get_format_string_hint(self, data: Any, **kwargs: object) -> Optional[str]:
         return 'test- get_format_string_hint'
 
     @override
-    def create_tree(
+    def _try_converting(
         self,
-        config: CLASS_BUILDER_CONFIG,
-        parent: ET.Element,
+        parent: XmlElementTypeAlias,
         data: Any,
         child_name: Optional[str] = None,
         **kwargs: object
-    ) -> DATA_PROCESSOR_RETURN_TYPE:
+    ) -> DataProcessorReturnTypeAlias:
         return None  # pragma: no coverage

@@ -3,15 +3,14 @@
 # import calendar
 # from collections import namedtuple
 # import enum
-from typing import Any, Dict, Final, Optional
+from typing import Any, Final, Optional
 import unittest
 import xml.etree.ElementTree as ET
 # import datetime as dt
-from libs.builder import Builder, BuilderConfig
 from libs.attributes import AttributeFlags
-from libs.builder_baseclass import CLASS_BUILDER_CONFIG, DATA_PROCESSOR_RETURN_TYPE
+from libs.abstract_baseclasses import ConfigTypeAlias, DataProcessorReturnTypeAlias
 from libs.codec_wrapper import CodecWrapper
-from libs.data_processor import DataProcessorBaseClass
+from libs.data_processor import DataProcessorAbstractBaseClass
 # from libs.misc import coalesce
 # from dateutil import tz
 from tests.predefined_test_cases import MyClass, MySubClass, MySubSubClass, test_case
@@ -25,7 +24,7 @@ class TestBuilder(unittest.TestCase):
         config.attr_flags = AttributeFlags.INC_ALL_DEBUG
         builder = Builder(config)
 
-        e: ET.Element = builder.build(test_case)
+        e: XmlElementTypeAlias = builder.build(test_case)
         ET.indent(e)
         result = ET.tostring(e, encoding='unicode')
 
@@ -43,20 +42,20 @@ class TestBuilder(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_custom_data_processors_using_inheritance(self):
-        class DataProcessor_MyClass(DataProcessorBaseClass):
+        class DataProcessor_MyClass(DataProcessorAbstractBaseClass):
             # @final
             @staticmethod
             def is_instance_or_derived(data: Any) -> bool:
                 return isinstance(data, MyClass)
 
-            def create_tree(
+            def _try_converting(
                     self,
-                    config: CLASS_BUILDER_CONFIG,
-                    parent: ET.Element,
+                    config: ConfigTypeAlias,
+                    parent: XmlElementTypeAlias,
                     data: Any,
                     child_name: Optional[str] = None,
                     **kwargs: object
-            ) -> DATA_PROCESSOR_RETURN_TYPE:
+            ) -> DataProcessorReturnTypeAlias:
                 if not DataProcessor_MyClass.is_instance_or_derived(data):
                     return None
                 new_tag: str = data.__class__.__name__
@@ -70,17 +69,17 @@ class TestBuilder(unittest.TestCase):
             def is_instance_or_derived(data: Any) -> bool:
                 return isinstance(data, MySubClass)
 
-            def create_tree(
+            def _try_converting(
                     self,
-                    config: CLASS_BUILDER_CONFIG,
-                    parent: ET.Element,
+                    config: ConfigTypeAlias,
+                    parent: XmlElementTypeAlias,
                     data: Any,
                     child_name: Optional[str] = None,
                     **kwargs: object
-            ) -> DATA_PROCESSOR_RETURN_TYPE:
+            ) -> DataProcessorReturnTypeAlias:
                 if not DataProcessor_MySubClass.is_instance_or_derived(data):
                     return None
-                current = super().create_tree(config, parent, data, child_name, **kwargs)
+                current = super()._try_converting(config, parent, data, child_name, **kwargs)
                 # should never happen since we already verified we are a descendant
                 assert current is not None
                 config.process(parent=current, data=data.ip_addr, child_name='ip_addr')
@@ -94,17 +93,17 @@ class TestBuilder(unittest.TestCase):
             def is_instance_or_derived(data: Any) -> bool:
                 return isinstance(data, MySubSubClass)
 
-            def create_tree(
+            def _try_converting(
                     self,
-                    config: CLASS_BUILDER_CONFIG,
-                    parent: ET.Element,
+                    config: ConfigTypeAlias,
+                    parent: XmlElementTypeAlias,
                     data: Any,
                     child_name: Optional[str] = None,
                     **kwargs: object
-            ) -> DATA_PROCESSOR_RETURN_TYPE:
+            ) -> DataProcessorReturnTypeAlias:
                 if not DataProcessor_MySubSubClass.is_instance_or_derived(data):
                     return None
-                current = super().create_tree(config, parent, data, child_name, **kwargs)
+                current = super()._try_converting(config, parent, data, child_name, **kwargs)
                 # should never happen since we already verified we are a descendant
                 assert current is not None
                 config.process(parent=current, data=data.geolocation, child_name='geolocation')
@@ -137,7 +136,7 @@ class TestBuilder(unittest.TestCase):
         config.attr_flags = AttributeFlags.INC_ALL_DEBUG
         builder = Builder(config)
 
-        e: ET.Element = builder.build([my_class, my_sub_class, my_sub_sub_class])
+        e: XmlElementTypeAlias = builder.build([my_class, my_sub_class, my_sub_sub_class])
         ET.indent(e)
         result = ET.tostring(e, encoding='unicode')
 
@@ -159,20 +158,20 @@ class TestBuilder(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_custom_data_processors_without_inheritance(self):
-        class DataProcessor_MyClass(DataProcessorBaseClass):
+        class DataProcessor_MyClass(DataProcessorAbstractBaseClass):
             # @ final
             @ staticmethod
             def is_MyClass(data: Any) -> bool:
                 return isinstance(data, MyClass)
 
-            def create_tree(
+            def _try_converting(
                     self,
-                    config: CLASS_BUILDER_CONFIG,
-                    parent: ET.Element,
+                    config: ConfigTypeAlias,
+                    parent: XmlElementTypeAlias,
                     data: Any,
                     child_name: Optional[str] = None,
                     **kwargs: object
-            ) -> DATA_PROCESSOR_RETURN_TYPE:
+            ) -> DataProcessorReturnTypeAlias:
                 if not DataProcessor_MyClass.is_MyClass(data):
                     return None
                 new_tag: str = data.__class__.__name__
@@ -180,20 +179,20 @@ class TestBuilder(unittest.TestCase):
                 config.process(parent=current, data=data.name, child_name='name')
                 return current
 
-        class DataProcessor_MySubClass(DataProcessorBaseClass):
+        class DataProcessor_MySubClass(DataProcessorAbstractBaseClass):
             # @ final
             @ staticmethod
             def is_MySubClass(data: Any) -> bool:
                 return isinstance(data, MySubClass)
 
-            def create_tree(
+            def _try_converting(
                     self,
-                    config: CLASS_BUILDER_CONFIG,
-                    parent: ET.Element,
+                    config: ConfigTypeAlias,
+                    parent: XmlElementTypeAlias,
                     data: Any,
                     child_name: Optional[str] = None,
                     **kwargs: object
-            ) -> DATA_PROCESSOR_RETURN_TYPE:
+            ) -> DataProcessorReturnTypeAlias:
                 if not DataProcessor_MySubClass.is_MySubClass(data):
                     return None
                 new_tag: str = data.__class__.__name__
@@ -204,20 +203,20 @@ class TestBuilder(unittest.TestCase):
                 config.process(parent=current, data=data._MySubClass__private_instance_var, child_name='__private_instance_var')
                 return current
 
-        class DataProcessor_MySubSubClass(DataProcessorBaseClass):
+        class DataProcessor_MySubSubClass(DataProcessorAbstractBaseClass):
             # @ final
             @ staticmethod
             def is_MySubSubClass(data: Any) -> bool:
                 return isinstance(data, MySubSubClass)
 
-            def create_tree(
+            def _try_converting(
                     self,
-                    config: CLASS_BUILDER_CONFIG,
-                    parent: ET.Element,
+                    config: ConfigTypeAlias,
+                    parent: XmlElementTypeAlias,
                     data: Any,
                     child_name: Optional[str] = None,
                     **kwargs: object
-            ) -> DATA_PROCESSOR_RETURN_TYPE:
+            ) -> DataProcessorReturnTypeAlias:
                 if not DataProcessor_MySubSubClass.is_MySubSubClass(data):
                     return None
                 new_tag: str = data.__class__.__name__
@@ -256,7 +255,7 @@ class TestBuilder(unittest.TestCase):
         config.attr_flags = AttributeFlags.INC_ALL_DEBUG
         builder = Builder(config)
 
-        e: ET.Element = builder.build([my_class, my_sub_class, my_sub_sub_class])
+        e: XmlElementTypeAlias = builder.build([my_class, my_sub_class, my_sub_sub_class])
         ET.indent(e)
         result = ET.tostring(e, encoding='unicode')
 
@@ -295,8 +294,8 @@ class TestBuilder(unittest.TestCase):
         self.assertEqual(config.codec_binary, cwBin)
 
     def test_element_constructors(self):
-        attr_parent: Final[Dict[str, str]] = {"key_test_parent": "val_test_parent"}
-        attr_sub: Final[Dict[str, str]] = {"key_test_sub": "val_test_sub"}
+        attr_parent: Final[XmlAttributesTypeAlias] = {"key_test_parent": "val_test_parent"}
+        attr_sub: Final[XmlAttributesTypeAlias] = {"key_test_sub": "val_test_sub"}
         config = BuilderConfig()
         eParent = config.Element('Test_Parent', attr_parent)
         eSub = config.SubElement(eParent, 'test_sub', attr_sub)

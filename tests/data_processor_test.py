@@ -1,13 +1,17 @@
 # flake8: noqa: F841
 #   F841 - unused variables
 # pyright: reportUnusedVariable=false
-# pylint: disable=W0612,C0115,C0116,C0301
+# pylint: disable=W0612,C0115,C0116,C0301,W0212
 #   W0612 - unused variables
 #   C0115,C0116 - missing docstring
 #   C0301 - line too long
+#   W0212 - protected-access
 """
 Unit tests for data processing code
 """
+from typing import Any, List, NamedTuple
+from zoneinfo import ZoneInfo
+from uuid import UUID
 import array
 import xml.etree.ElementTree as ET
 import datetime as dt
@@ -15,19 +19,16 @@ import calendar
 import sys
 import unittest
 import tzlocal
-from typing import NamedTuple
-from zoneinfo import ZoneInfo
-from uuid import UUID
 from dateutil import tz
-# import os
-# from typing import Optional
-from libs.builder import Builder, BuilderConfig
-from libs.attributes import AttributeFlags, AttributeFlagsNames
-# from libs.builder_baseclass import CLASS_BUILDER_CONFIG, DATA_PROCESSOR_RETURN_TYPE
+from libs.attributes import AttributeFlags, ATTRIBUTE_FLAGS_NAMES
 from libs.codec_wrapper import CodecWrapper
 from libs.data_processor import (
-    DataProcessorBaseClass, DataProcessor_binary, DataProcessor_post_processor_for_classes,
-    DataProcessor_tzinfo, DataProcessor_used_for_testing, DataProcessor_used_for_testing_use_hints
+    DataProcessorAbstractBaseClass,
+    DataProcessor_binary,
+    DataProcessor_post_processor_for_classes,
+    DataProcessor_tzinfo,
+    DataProcessor_used_for_testing,
+    DataProcessor_used_for_testing_use_hints
 )
 from tests.config_test_cases import test_cases_config_rewrite_expected_output
 from tests.predefined_test_cases import list_of_my_classes
@@ -40,7 +41,7 @@ class Point3D(NamedTuple):
 
 
 class TestDataProcessor(unittest.TestCase):
-    test_data = [
+    test_data: List[Any] = [
         (None, str(type(None)), 'none'),
         (True, str(type(True)), 'bool: True'),
         (False, str(type(False)), 'bool: False'),
@@ -100,39 +101,39 @@ class TestDataProcessor(unittest.TestCase):
         self.assertFalse(self.is_valid_uuid('foobar'))
         self.assertFalse(self.is_valid_uuid(''))
 
-    def baseclass_test_helper(self, dp: DataProcessorBaseClass):
+    def baseclass_test_helper(self, dp: DataProcessorAbstractBaseClass):
         config = BuilderConfig()
         et_parent = config.Element(tag=config.root_label)
         et_current = config.Element(tag='dummy')
 
-        self.assertIsNone(dp.get_field_type_hint('dummy'))
-        self.assertIsNone(dp.get_format_string_hint('dummy'))
+        self.assertIsNone(dp._get_field_type_hint('dummy'))
+        self.assertIsNone(dp._get_format_string_hint('dummy'))
 
-        d = dp.attr_alt_id(config, et_parent, et_current, 'dummy')
-        self.assertListEqual(list(d.keys()), [AttributeFlagsNames[AttributeFlags.INC_ALT_ID]])
+        d = dp._attr_alt_id(config, et_parent, et_current, 'dummy')
+        self.assertListEqual(list(d.keys()), [ATTRIBUTE_FLAGS_NAMES[AttributeFlags.INC_ALT_ID]])
         self.assertTrue(self.is_valid_uuid(list(d.values())[0]))
 
-        d = dp.attr_binary_encoding(config, et_parent, et_current, 'dummy')
-        self.assertListEqual(list(d.keys()), [AttributeFlagsNames[AttributeFlags.INC_BINARY_ENCODING]])
+        d = dp._attr_binary_encoding(config, et_parent, et_current, 'dummy')
+        self.assertListEqual(list(d.keys()), [ATTRIBUTE_FLAGS_NAMES[AttributeFlags.INC_BINARY_ENCODING]])
         self.assertTrue(list(d.values())[0] == 'base64')
 
-        d = dp.attr_field_type_hint(config, et_parent, et_current, 'dummy')
+        d = dp._attr_field_type_hint(config, et_parent, et_current, 'dummy')
         self.assertDictEqual(d, {})
 
-        d = dp.attr_format_string_hint(config, et_parent, et_current, 'dummy')
+        d = dp._attr_format_string_hint(config, et_parent, et_current, 'dummy')
         self.assertDictEqual(d, {})
 
-        d = dp.attr_len(config, et_parent, et_current, 'dummy')
-        self.assertDictEqual(d, {AttributeFlagsNames[AttributeFlags.INC_LEN]: str(len('dummy'))})
+        d = dp._attr_len(config, et_parent, et_current, 'dummy')
+        self.assertDictEqual(d, {ATTRIBUTE_FLAGS_NAMES[AttributeFlags.INC_LEN]: str(len('dummy'))})
 
-        d = dp.attr_python_data_type(config, et_parent, et_current, 'dummy')
-        self.assertDictEqual(d, {AttributeFlagsNames[AttributeFlags.INC_PYTHON_DATA_TYPE]: str(type('dummy'))[1:-1]})
+        d = dp._attr_python_data_type(config, et_parent, et_current, 'dummy')
+        self.assertDictEqual(d, {ATTRIBUTE_FLAGS_NAMES[AttributeFlags.INC_PYTHON_DATA_TYPE]: str(type('dummy'))[1:-1]})
 
-        d = dp.attr_size_bytes(config, et_parent, et_current, 'dummy')
-        self.assertDictEqual(d, {AttributeFlagsNames[AttributeFlags.INC_SIZE_BYTES]: str(sys.getsizeof(et_current.text))})
+        d = dp._attr_length_element_text(config, et_parent, et_current, 'dummy')
+        self.assertDictEqual(d, {ATTRIBUTE_FLAGS_NAMES[AttributeFlags.INC_LENGTH_ELEMENT_TEXT]: str(sys.getsizeof(et_current.text))})
 
-        d = dp.attr_xsd_data_type(config, et_parent, et_current, 'dummy')
-        self.assertDictEqual(d, {AttributeFlagsNames[AttributeFlags.INC_XSD_DATA_TYPE]: 'anyType'})
+        d = dp._attr_xsd_data_type(config, et_parent, et_current, 'dummy')
+        self.assertDictEqual(d, {ATTRIBUTE_FLAGS_NAMES[AttributeFlags.INC_XSD_DATA_TYPE]: 'anyType'})
 
     def test_add_attributes(self):
         config = BuilderConfig()
@@ -142,125 +143,125 @@ class TestDataProcessor(unittest.TestCase):
         dp = DataProcessor_used_for_testing()
 
     def test_is_bool(self):
-        func = DataProcessorBaseClass.is_bool
+        func = DataProcessorAbstractBaseClass.is_bool
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, True, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_binary(self):
-        func = DataProcessorBaseClass.is_binary
+        func = DataProcessorAbstractBaseClass.is_binary
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, False, False, True, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_bytearray(self):
-        func = DataProcessorBaseClass.is_bytearray
+        func = DataProcessorAbstractBaseClass.is_bytearray
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, False, False, False, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_bytes(self):
-        func = DataProcessorBaseClass.is_bytes
+        func = DataProcessorAbstractBaseClass.is_bytes
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, False, False, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_calendar(self):
-        func = DataProcessorBaseClass.is_calendar
+        func = DataProcessorAbstractBaseClass.is_calendar
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, False]
         self.assertListEqual(resp, expected)
 
     def test_is_date(self):
-        func = DataProcessorBaseClass.is_date
+        func = DataProcessorAbstractBaseClass.is_date
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_datetime(self):
-        func = DataProcessorBaseClass.is_datetime
+        func = DataProcessorAbstractBaseClass.is_datetime
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_dict(self):
-        func = DataProcessorBaseClass.is_dict
+        func = DataProcessorAbstractBaseClass.is_dict
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, False, False, False, False, False, False, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_enum(self):
-        func = DataProcessorBaseClass.is_enum
+        func = DataProcessorAbstractBaseClass.is_enum
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_namedtuple(self):
-        func = DataProcessorBaseClass.is_namedtuple
+        func = DataProcessorAbstractBaseClass.is_namedtuple
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True]
         self.assertListEqual(resp, expected)
 
     def test_is_none(self):
-        func = DataProcessorBaseClass.is_none
+        func = DataProcessorAbstractBaseClass.is_none
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_numeric(self):
-        func = DataProcessorBaseClass.is_numeric
+        func = DataProcessorAbstractBaseClass.is_numeric
         resp = [func(x[0]) for x in self.test_data]
         expected = [False, False, False, False, False, True, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_sequence(self):
-        func = DataProcessorBaseClass.is_sequence
+        func = DataProcessorAbstractBaseClass.is_sequence
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, False, False, False, False, True, True, True, True, True, False, False, False, False, False, False, False, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_str(self):
-        func = DataProcessorBaseClass.is_str
+        func = DataProcessorAbstractBaseClass.is_str
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_time(self):
-        func = DataProcessorBaseClass.is_time
+        func = DataProcessorAbstractBaseClass.is_time
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, False, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_timedelta(self):
-        func = DataProcessorBaseClass.is_timedelta
+        func = DataProcessorAbstractBaseClass.is_timedelta
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, False, False, False, False, False, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_timezone(self):
-        func = DataProcessorBaseClass.is_timezone
+        func = DataProcessorAbstractBaseClass.is_timezone
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, False, False, False, False, False]
         self.assertListEqual(resp, expected)
 
     def test_is_tzinfo(self):
-        func = DataProcessorBaseClass.is_tzinfo
+        func = DataProcessorAbstractBaseClass.is_tzinfo
         resp = [func(x[0]) for x in self.test_data]
         dbg = [(x[1], func(x[0]), x[2]) for x in self.test_data]
         expected = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, False, False, False, False, False, False, False]
@@ -276,18 +277,18 @@ class TestDataProcessor(unittest.TestCase):
 
     def test_DataProcessor_with_hints(self):
         dp = DataProcessor_used_for_testing_use_hints()
-        self.assertEqual(dp.get_field_type_hint('dummy'), 'test- get_field_type_hint')
-        self.assertEqual(dp.get_format_string_hint('dummy'), 'test- get_format_string_hint')
+        self.assertEqual(dp._get_field_type_hint('dummy'), 'test- get_field_type_hint')
+        self.assertEqual(dp._get_format_string_hint('dummy'), 'test- get_format_string_hint')
 
         config = BuilderConfig()
         et_parent = config.Element(tag=config.root_label)
         et_current = config.Element(tag='dummy')
 
-        d = dp.attr_field_type_hint(config, et_parent, et_current, 'dummy')
-        self.assertDictEqual(d, {AttributeFlagsNames[AttributeFlags.INC_FIELD_TYPE_HINT]: 'test- get_field_type_hint'})
+        d = dp._attr_field_type_hint(config, et_parent, et_current, 'dummy')
+        self.assertDictEqual(d, {ATTRIBUTE_FLAGS_NAMES[AttributeFlags.INC_FIELD_TYPE_HINT]: 'test- get_field_type_hint'})
 
-        d = dp.attr_format_string_hint(config, et_parent, et_current, 'dummy')
-        self.assertDictEqual(d, {AttributeFlagsNames[AttributeFlags.INC_FORMAT_STRING_HINT]: 'test- get_format_string_hint'})
+        d = dp._attr_format_string_hint(config, et_parent, et_current, 'dummy')
+        self.assertDictEqual(d, {ATTRIBUTE_FLAGS_NAMES[AttributeFlags.INC_FORMAT_STRING_HINT]: 'test- get_format_string_hint'})
 
     def test_DataProcessor_tzinfo(self):
         dp = DataProcessor_tzinfo()
