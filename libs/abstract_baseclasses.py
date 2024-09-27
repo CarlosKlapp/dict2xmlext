@@ -83,6 +83,7 @@ class ConfigBaseClass(ABC):
         self.label_invalid_xml_element_name_attribute: str = 'original_element_name'
 
         self._codec_binary: CodecWrapper = CodecWrapper()
+        self.codec_binary.codec_name = 'base64'
         """
         Encoder for binary to text.
         """
@@ -197,9 +198,6 @@ class ConfigBaseClass(ABC):
     Getter / Setter for the text codec
     """
 
-    def __post_init__(self) -> None:
-        self.codec_binary.codec_name = 'base64'
-
     def make_attribute(
         self,
         attr_flag: AttributeFlags,
@@ -254,7 +252,7 @@ class DataProcessorAbstractBaseClass(ABC):
         self._classifier = value
 
     @abstractmethod
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         """
         Return the default element name of the XML -> `<element_name>...</element_name>`.
 
@@ -266,7 +264,7 @@ class DataProcessorAbstractBaseClass(ABC):
         """
 
     @abstractmethod
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         """
         Indicates whether this class can endode this data type.
 
@@ -354,7 +352,7 @@ class DataProcessorAbstractBaseClass(ABC):
         """
         return child_name \
             or self._get_element_name_from_config() \
-            or self.get_default_element_name(data)
+            or self._get_default_element_name(data)
 
     def _get_field_type_hint(self, data: Any, **kwargs: object) -> Optional[str]:  # pylint: disable=W0613;unused-argument
         """
@@ -418,7 +416,7 @@ class DataProcessorAbstractBaseClass(ABC):
         Returns:
             DATA_PROCESSOR_RETURN_TYPE: _description_
         """
-        if not self.is_expected_data_type(data):
+        if not self._is_expected_data_type(data):
             return None
 
         new_tag: str = self._get_element_name(
@@ -441,7 +439,7 @@ class DataProcessorAbstractBaseClass(ABC):
         )
         return current
 
-    def try_converting_add_attributes(  # pylint: disable=W0613;unused-argument
+    def _try_converting_add_attributes(  # pylint: disable=W0613;unused-argument
         self,
         parent: XmlElementTypeAlias,
         data: Any,
@@ -469,6 +467,30 @@ class DataProcessorAbstractBaseClass(ABC):
             return None
         self._add_attributes(config=self.config, parent=parent, current=e, data=data)
         return e
+
+    def convert(
+        self,
+        parent: OptionalXmlElementTypeAlias,
+        data: Any,
+        child_name: Optional[str] = None,
+        **kwargs: object
+    ) -> DataProcessorReturnTypeAlias:
+        if parent is None:
+            parent = XmlElementNameBaseClass.create_root_element(
+                config=self.config,
+                tag=None,
+                attrib=None,
+                kwargs=kwargs
+            )
+
+        self._try_converting_add_attributes(
+            parent=parent,
+            data=data,
+            child_name=child_name,
+            kwargs=kwargs
+        )
+
+        return parent
 
     @classmethod
     def convert_to_xml(
@@ -512,7 +534,7 @@ class DataProcessorAbstractBaseClass(ABC):
         e: DataProcessorReturnTypeAlias = None
 
         for processor in config.custom_pre_processors:
-            e = processor.try_converting_add_attributes(
+            e = processor._try_converting_add_attributes(
                 config=config,
                 parent=parent,
                 data=data,
@@ -523,7 +545,7 @@ class DataProcessorAbstractBaseClass(ABC):
                 return e
 
         for processor in config.default_processors:
-            e = processor.try_converting_add_attributes(
+            e = processor._try_converting_add_attributes(
                 config=config,
                 parent=parent,
                 data=data,
@@ -534,7 +556,7 @@ class DataProcessorAbstractBaseClass(ABC):
                 return e
 
         for processor in config.custom_post_processors:
-            e = processor.try_converting_add_attributes(
+            e = processor._try_converting_add_attributes(
                 config=config,
                 parent=parent,
                 data=data,
@@ -544,7 +566,7 @@ class DataProcessorAbstractBaseClass(ABC):
             if e is not None:
                 return e
 
-        e = config.last_chance_processor.try_converting_add_attributes(
+        e = config.last_chance_processor._try_converting_add_attributes(
             config=config,
             parent=parent,
             data=data,
@@ -947,6 +969,7 @@ class XmlElementNameBaseClass:
         self,
         config: ConfigTypeAlias,
         tag: str,
+        text: Optional[str],
         attrib: OptionalXmlAttributesTypeAlias,
         parent: OptionalXmlElementTypeAlias
     ) -> None:
@@ -977,7 +1000,7 @@ class XmlElementNameBaseClass:
         List of child elements.
         """
 
-        self.text: Optional[str] = None
+        self.text: Optional[str] = text
         """
         Text within the element. `<tag>text</tag>`
         """
@@ -989,14 +1012,14 @@ class XmlElementNameBaseClass:
         if attrib is not None:
             self.attributes |= attrib
 
-        new_tag, old_tag = self.fix_invalid_xml_element_name(tag)
+        new_tag, old_tag = self._fix_invalid_xml_element_name(tag)
         self.attributes |= old_tag
         self.tag: str = new_tag
         """
         Name of the element. `<tag>text</tag>`
         """
 
-    def is_valid_xml_element_name(
+    def _is_valid_xml_element_name(
         self,
         tag: str
     ) -> bool:
@@ -1015,7 +1038,7 @@ class XmlElementNameBaseClass:
         """
         return self.regex_pattern_is_valid_element_name.fullmatch(tag) is not None
 
-    def fix_invalid_xml_element_name(
+    def _fix_invalid_xml_element_name(
         self,
         tag: str
     ) -> Tuple[str, XmlAttributesTypeAlias]:
@@ -1034,7 +1057,7 @@ class XmlElementNameBaseClass:
             Returns a tuple with the following information:
             Tuple('valid_element_name', {"attribute_name": "attribute_value"})
         """
-        if self.is_valid_xml_element_name(tag):
+        if self._is_valid_xml_element_name(tag):
             return (tag, {})
         else:
             return (
@@ -1046,7 +1069,8 @@ class XmlElementNameBaseClass:
     def create_root_element(
         cls,
         config: ConfigTypeAlias,
-        tag: Optional[str],
+        tag: Optional[str] = None,
+        text: Optional[str] = None,
         attrib: OptionalXmlAttributesTypeAlias = None,
         **kwargs: object
     ) -> XmlElementTypeAlias:
@@ -1066,6 +1090,7 @@ class XmlElementNameBaseClass:
             config=config,
             parent=None,
             tag=config.root_label if tag is None else tag,
+            text=text,
             attrib=attrib,
             kwargs=kwargs
         )
@@ -1075,6 +1100,7 @@ class XmlElementNameBaseClass:
         self,
         config: ConfigTypeAlias,
         tag: str,
+        text: Optional[str] = None,
         attrib: OptionalXmlAttributesTypeAlias = None,
         **kwargs: object
     ) -> XmlElementTypeAlias:
@@ -1094,6 +1120,7 @@ class XmlElementNameBaseClass:
             config=config,
             parent=self,
             tag=tag,
+            text=text,
             attrib=attrib,
             kwargs=kwargs
         )
@@ -1104,6 +1131,7 @@ class XmlElementNameBaseClass:
         config: ConfigTypeAlias,
         parent: OptionalXmlElementTypeAlias,
         tag: str,
+        text: Optional[str] = None,
         attrib: OptionalXmlAttributesTypeAlias = None,
         **kwargs: object
     ) -> XmlElementTypeAlias:
@@ -1119,7 +1147,13 @@ class XmlElementNameBaseClass:
         Returns:
             XmlElementTypeAlias: _description_
         """
-        element: XmlElementNameBaseClass = XmlElementNameBaseClass(config, tag, attrib, parent)
+        element: XmlElementNameBaseClass = XmlElementNameBaseClass(
+            config=config,
+            tag=tag,
+            text=text,
+            attrib=attrib,
+            parent=parent
+        )
         counter: int = config.increment_elements_sequential_counter()  # always increment
 
         if AttributeFlags.INC_SEQ_ID & config.attr_flags:

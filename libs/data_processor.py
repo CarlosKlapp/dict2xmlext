@@ -22,13 +22,13 @@ class DataProcessor_last_chance(DataProcessorAbstractBaseClass):
 
     _expr = re.compile('<(.*) at 0x[0-9a-f]{12}>', re.IGNORECASE)
 
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'unknown-object'
 
     def _get_element_name_from_config(self) -> Optional[str]:
         return self.config.override_unknown_object_label
 
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return True
 
     def _get_textual_representation_of_data(
@@ -54,13 +54,13 @@ class DataProcessor_bool(DataProcessorAbstractBaseClass):
     Encode boolean values.
     """
 
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'bool'
 
     def _get_element_name_from_config(self) -> Optional[str]:
         return self.config.override_bool_label
 
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_bool(data)
 
     def _get_textual_representation_of_data(
@@ -78,13 +78,13 @@ class DataProcessor_binary(DataProcessorAbstractBaseClass):
     Encode binary values.
     """
 
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'binary'
 
     def _get_element_name_from_config(self) -> Optional[str]:
         return self.config.override_binary_label
 
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_binary(data)
 
     def _get_textual_representation_of_data(
@@ -110,13 +110,13 @@ class DataProcessor_calendar(DataProcessorAbstractBaseClass):
     calendar is an abstract base class.
     """
 
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'calendar'
 
     def _get_element_name_from_config(self) -> Optional[str]:
         return self.config.override_calendar_label
 
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_calendar(data)
 
     def _get_textual_representation_of_data(
@@ -136,7 +136,7 @@ class DataProcessor_ChainMap(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'ChainMap'
 
     @override
@@ -144,7 +144,7 @@ class DataProcessor_ChainMap(DataProcessorAbstractBaseClass):
         return self.config.override_chainmap_label
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_chainmap(data)
 
     @override
@@ -170,7 +170,7 @@ class DataProcessor_dict(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'dict'
 
     @override
@@ -178,7 +178,7 @@ class DataProcessor_dict(DataProcessorAbstractBaseClass):
         return self.config.override_dict_label
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_dict(data)
 
     @override
@@ -205,7 +205,7 @@ class DataProcessor_enum(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'enum'
 
     @override
@@ -213,7 +213,7 @@ class DataProcessor_enum(DataProcessorAbstractBaseClass):
         return self.config.override_enum_label
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_enum(data)
 
     @override
@@ -233,7 +233,7 @@ class DataProcessor_namedtuple(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'namedtuple'
 
     @override
@@ -241,7 +241,7 @@ class DataProcessor_namedtuple(DataProcessorAbstractBaseClass):
         return self.config.override_namedtuple_label
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_namedtuple(data)
 
     @override
@@ -272,7 +272,7 @@ class DataProcessor_none(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'none'
 
     @override
@@ -280,7 +280,7 @@ class DataProcessor_none(DataProcessorAbstractBaseClass):
         return self.config.override_none_label
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_none(data)
 
 
@@ -290,7 +290,7 @@ class DataProcessor_numeric(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'numeric'
 
     @override
@@ -298,7 +298,7 @@ class DataProcessor_numeric(DataProcessorAbstractBaseClass):
         return self.config.override_numeric_label
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_numeric(data)
 
     @override
@@ -318,7 +318,7 @@ class DataProcessor_sequence(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'sequence'
 
     @override
@@ -326,7 +326,7 @@ class DataProcessor_sequence(DataProcessorAbstractBaseClass):
         return self.config.override_sequence_label
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_sequence(data)
 
     @override
@@ -353,7 +353,7 @@ class DataProcessor_str(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'str'
 
     @override
@@ -361,7 +361,7 @@ class DataProcessor_str(DataProcessorAbstractBaseClass):
         return self.config.override_str_label
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_str(data)
 
     @override
@@ -381,7 +381,7 @@ class DataProcessor_date(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'date'
 
     @override
@@ -389,7 +389,7 @@ class DataProcessor_date(DataProcessorAbstractBaseClass):
         return self.config.override_date_label
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_date(data)
 
     @override
@@ -413,7 +413,7 @@ class DataProcessor_datetime(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'datetime'
 
     @override
@@ -421,7 +421,7 @@ class DataProcessor_datetime(DataProcessorAbstractBaseClass):
         return self.config.override_datetime_label
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_datetime(data)
 
     @override
@@ -445,7 +445,7 @@ class DataProcessor_time(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'time'
 
     @override
@@ -457,7 +457,7 @@ class DataProcessor_time(DataProcessorAbstractBaseClass):
         return 'HH:MM:SS[.ssssss]'
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_time(data)
 
     @override
@@ -477,7 +477,7 @@ class DataProcessor_timedelta(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'timedelta'
 
     @override
@@ -489,7 +489,7 @@ class DataProcessor_timedelta(DataProcessorAbstractBaseClass):
         return '[XX day[s], ]HH:MM:SS[.ssssss]'
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_timedelta(data)
 
     @override
@@ -509,7 +509,7 @@ class DataProcessor_timezone(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'timezone'
 
     @override
@@ -521,7 +521,7 @@ class DataProcessor_timezone(DataProcessorAbstractBaseClass):
         return 'UTC±HH:MM'
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_timezone(data)
 
     @override
@@ -546,7 +546,7 @@ class DataProcessor_tzinfo(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'tzinfo'
 
     @override
@@ -562,7 +562,7 @@ class DataProcessor_tzinfo(DataProcessorAbstractBaseClass):
         return 'Zone/City'
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_tzinfo(data)
 
     @override
@@ -596,7 +596,7 @@ class DataProcessor_zoneinfo(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'zoneinfo'
 
     @override
@@ -604,7 +604,7 @@ class DataProcessor_zoneinfo(DataProcessorAbstractBaseClass):
         return self.config.override_zoneinfo_label
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return self._classifier.is_zoneinfo(data)
 
     @override
@@ -624,7 +624,7 @@ class DataProcessor_post_processor_for_classes(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return data.__class__.__name__
 
     @override
@@ -632,7 +632,7 @@ class DataProcessor_post_processor_for_classes(DataProcessorAbstractBaseClass):
         return self.config.override_class_label
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         # can we iterate over its values?
         # Does it have a __dict__ we iterate over?
         return hasattr(data, '__dict__') and \
@@ -669,11 +669,11 @@ class DataProcessor_used_for_testing(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'DataProcessor_used_for_testing'
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return True
 
     @override
@@ -703,11 +703,11 @@ class DataProcessor_used_for_testing_use_hints(DataProcessorAbstractBaseClass):
     """
 
     @override
-    def get_default_element_name(self, data: Any) -> str:
+    def _get_default_element_name(self, data: Any) -> str:
         return 'DataProcessor_used_for_testing_use_hints'
 
     @override
-    def is_expected_data_type(self, data: Any) -> bool:
+    def _is_expected_data_type(self, data: Any) -> bool:
         return True
 
     @override
