@@ -1,8 +1,10 @@
 # flake8: noqa: F841
 #   F841 - unused variables
 # pyright: reportUnusedVariable=false, reportPrivateUsage=false
-# pylint: disable=W0612,C0115,C0116,C0301,W0212
+# pylint: disable=W0612,W0613,C0103,C0115,C0116,C0301,W0212
 #   W0612 - unused variables
+#   W0613 - unused-argument
+#   C0103 - invalid-name
 #   C0115,C0116 - missing docstring
 #   C0301 - line too long
 #   W0212 - protected-access
@@ -16,7 +18,6 @@ import array
 import xml.etree.ElementTree as ET
 import datetime as dt
 import calendar
-import sys
 import unittest
 import tzlocal
 from dateutil import tz
@@ -27,7 +28,6 @@ from libs.config import Config
 from libs.data_processor import (
     DataProcessorAbstractBaseClass,
     DataProcessor_binary,
-    DataProcessor_post_processor_for_classes,
     DataProcessor_tzinfo,
     DataProcessor_used_for_testing,
     DataProcessor_used_for_testing_use_hints

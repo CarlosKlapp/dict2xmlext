@@ -1,4 +1,8 @@
-from setuptools import find_packages, setup
+"""
+Setup information for the library.
+"""
+
+from setuptools import find_packages, setup  # type: ignore
 
 setup(
     name='dict2xmlext',

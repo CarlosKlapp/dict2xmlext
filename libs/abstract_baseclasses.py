@@ -534,7 +534,7 @@ class DataProcessorAbstractBaseClass(ABC):
         e: DataProcessorReturnTypeAlias = None
 
         for processor in config.custom_pre_processors:
-            e = processor._try_converting_add_attributes(
+            e = processor._try_converting_add_attributes(  # pylint: disable=W0212; protected-access
                 config=config,
                 parent=parent,
                 data=data,
@@ -545,7 +545,7 @@ class DataProcessorAbstractBaseClass(ABC):
                 return e
 
         for processor in config.default_processors:
-            e = processor._try_converting_add_attributes(
+            e = processor._try_converting_add_attributes(  # pylint: disable=W0212; protected-access
                 config=config,
                 parent=parent,
                 data=data,
@@ -556,7 +556,7 @@ class DataProcessorAbstractBaseClass(ABC):
                 return e
 
         for processor in config.custom_post_processors:
-            e = processor._try_converting_add_attributes(
+            e = processor._try_converting_add_attributes(  # pylint: disable=W0212; protected-access
                 config=config,
                 parent=parent,
                 data=data,
@@ -566,7 +566,7 @@ class DataProcessorAbstractBaseClass(ABC):
             if e is not None:
                 return e
 
-        e = config.last_chance_processor._try_converting_add_attributes(
+        e = config.last_chance_processor._try_converting_add_attributes(  # pylint: disable=W0212; protected-access
             config=config,
             parent=parent,
             data=data,
