@@ -1,7 +1,10 @@
+"""
+Boolean indicating whether to overwrite the test cases.
+"""
 from typing import Final
 
 
-test_cases_config_rewrite_expected_output: Final[bool] = False
+TEST_CASES_CONFIG_REWRITE_EXPECTED_OUTPUT: Final[bool] = False
 """
 Used during development to overwrite the expected test case responses.
 True if the tests should overwrite the responses. False, read the existing

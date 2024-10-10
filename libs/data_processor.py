@@ -2,7 +2,7 @@
 Code to process and transform data into XML.
 """
 # pylint: disable=C0103; invalid-name
-from typing import Any, Optional, override
+from typing import Any, Final, Optional, override
 import datetime as dt
 import re
 import inspect
@@ -20,7 +20,7 @@ class DataProcessor_last_chance(DataProcessorAbstractBaseClass):
     encode the data. Use this encoder.
     """
 
-    _expr = re.compile('<(.*) at 0x[0-9a-f]{12}>', re.IGNORECASE)
+    _REGEX_OBJECT: Final[re.Pattern[str]] = re.compile(r'<(.*) at 0x[0-9a-f]+>', re.IGNORECASE)
 
     def _get_default_element_name(self, data: Any) -> str:
         return 'unknown-object'
@@ -42,7 +42,7 @@ class DataProcessor_last_chance(DataProcessorAbstractBaseClass):
         # Objects are typically in the format '<calendar.Calendar object at 0x7ff56b9035b0>'
         # Use the regular expression to extract the object name
         if ' at 0x' in text:
-            m = self._expr.match(text)
+            m = self._REGEX_OBJECT.match(text)
             if m is not None:
                 # return 'calendar.Calendar object'
                 text = m.group(1)
@@ -126,7 +126,7 @@ class DataProcessor_calendar(DataProcessorAbstractBaseClass):
         data: Any,
         **kwargs: object
     ) -> Optional[str]:
-        # TODO: This isn't useful value. Put here as placeholder for someone to override.
+        # TODO: This isn't a useful value. Put here as placeholder for someone to override.
         return 'calendar object'
 
 

@@ -1,4 +1,10 @@
-from typing import Any, Dict, List, NamedTuple
+"""
+Predefined test cases
+"""
+# pylint: disable=C0115,C0116
+#   C0115 - missing-class-docstring
+#   C0116 - missing-function-docstring
+from typing import Any, Dict, Final, List, NamedTuple
 from zoneinfo import ZoneInfo
 import array
 import calendar
@@ -70,7 +76,7 @@ class Point3D(NamedTuple):
 
 
 # Driver Program
-test_case: Dict[Any, Any] = {
+TEST_CASE: Final[Dict[Any, Any]] = {
     12: 144,
     'none-nothing': None,
     'empty-string': '',
@@ -89,7 +95,14 @@ test_case: Dict[Any, Any] = {
             'my time': dt.time(16, 15, 14),
             'my tzinfo': tz.gettz('America/Chicago'),  # cSpell:ignore gettz
             'my zoneinfo': ZoneInfo('America/New_York'),
-            'my timedelta': dt.timedelta(days=34, hours=13, minutes=46, seconds=57, milliseconds=675, microseconds=423),
+            'my timedelta': dt.timedelta(
+                days=34,
+                hours=13,
+                minutes=46,
+                seconds=57,
+                milliseconds=675,
+                microseconds=423
+            ),
             'my timedelta -9 hrs': dt.timedelta(hours=-9),
             'my timedelta +7 hrs': dt.timedelta(hours=7),
             'my calendar': calendar.Calendar()
@@ -124,7 +137,10 @@ test_case: Dict[Any, Any] = {
     'list_of_classes': list_of_my_classes,
     'collections': {
         'deque': deque('ghi'),
-        'ChainMap': ChainMap({'art': 'van gogh', 'opera': 'carmen'}, {'music': 'bach', 'art': 'rembrandt'}),
+        'ChainMap': ChainMap(
+            {'art': 'van gogh', 'opera': 'carmen'},
+            {'music': 'bach', 'art': 'rembrandt'}
+        ),
         'counter': Counter(a=4, b=2, c=0, d=-2),
         'OrderedDict': OrderedDict(one=1, two=2, three=3),
         'UserDict': UserDict([('yellow', 1), ('blue', 2), ('yellow', 3), ('blue', 4), ('red', 1)]),

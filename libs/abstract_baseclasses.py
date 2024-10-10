@@ -224,10 +224,10 @@ class DataProcessorAbstractBaseClass(ABC):
 
     This abstract class implements many of the methods. Child
     classes need to override the following methods to encode the data:\n
-        get_default_element_name
-        get_element_name_from_config
-        is_expected_data_type
-        get_textual_representation_of_data
+        _get_default_element_name
+        _get_element_name_from_config
+        _get_textual_representation_of_data
+        _is_expected_data_type
     If the data has nested data like a dictionary or list, the
     child class should also override:\n
         _recursively_process_any_nested_objects
@@ -475,6 +475,17 @@ class DataProcessorAbstractBaseClass(ABC):
         child_name: Optional[str] = None,
         **kwargs: object
     ) -> DataProcessorReturnTypeAlias:
+        """
+        Instance method for converting an object to XML.
+
+        Args:
+            parent (OptionalXmlElementTypeAlias): _description_
+            data (Any): _description_
+            child_name (Optional[str], optional): _description_. Defaults to None.
+
+        Returns:
+            DataProcessorReturnTypeAlias: _description_
+        """
         if parent is None:
             parent = XmlElementNameBaseClass.create_root_element(
                 config=self.config,
@@ -501,6 +512,7 @@ class DataProcessorAbstractBaseClass(ABC):
         **kwargs: object
     ) -> XmlElementTypeAlias:
         """
+        **Class Method**\n
         Main method for converting an object to XML.
 
         Args:

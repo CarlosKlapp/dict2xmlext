@@ -1,21 +1,21 @@
-<root id="1">
-  <sequence id="2" debug_info="processed_by:DataProcessor_sequence" length="3" py_type="class 'list'" size_bytes="16" xsd_type="anyType">
-    <MyClass id="3" debug_info="processed_by:DataProcessor_MyClass" py_type="class 'tests.predefined_test_cases.MyClass'" size_bytes="16" xsd_type="anyType">
-      <name id="4" debug_info="processed_by:DataProcessor_str" length="9" py_type="class 'str'" size_bytes="50" xsd_type="anyType">test name</name>
+<root>
+  <sequence>
+    <MyClass>
+      <name>test name</name>
     </MyClass>
-    <MySubClass id="5" debug_info="processed_by:DataProcessor_MySubClass" py_type="class 'tests.predefined_test_cases.MySubClass'" size_bytes="16" xsd_type="anyType">
-      <name id="6" debug_info="processed_by:DataProcessor_str" length="9" py_type="class 'str'" size_bytes="50" xsd_type="anyType">test name</name>
-      <ip_addr id="7" debug_info="processed_by:DataProcessor_str" length="8" py_type="class 'str'" size_bytes="49" xsd_type="anyType">10.2.3.4</ip_addr>
-      <port id="8" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="45" xsd_type="anyType">8080</port>
-      <__private_instance_var id="9" debug_info="processed_by:DataProcessor_str" length="25" py_type="class 'str'" size_bytes="66" xsd_type="anyType">private instance variable</__private_instance_var>
+    <MySubClass>
+      <_MySubClass__private_instance_var>private instance variable</_MySubClass__private_instance_var>
+      <ip_addr>10.2.3.4</ip_addr>
+      <name>test name</name>
+      <port>8080</port>
     </MySubClass>
-    <MySubSubClass id="10" debug_info="processed_by:DataProcessor_MySubSubClass" py_type="class 'tests.predefined_test_cases.MySubSubClass'" size_bytes="16" xsd_type="anyType">
-      <name id="11" debug_info="processed_by:DataProcessor_str" length="9" py_type="class 'str'" size_bytes="50" xsd_type="anyType">test name</name>
-      <ip_addr id="12" debug_info="processed_by:DataProcessor_str" length="8" py_type="class 'str'" size_bytes="49" xsd_type="anyType">10.2.3.4</ip_addr>
-      <port id="13" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" size_bytes="45" xsd_type="anyType">8080</port>
-      <__private_instance_var id="14" debug_info="processed_by:DataProcessor_str" length="25" py_type="class 'str'" size_bytes="66" xsd_type="anyType">private instance variable</__private_instance_var>
-      <geolocation id="15" debug_info="processed_by:DataProcessor_str" length="7" py_type="class 'str'" size_bytes="48" xsd_type="anyType">America</geolocation>
-      <instance_var id="16" debug_info="processed_by:DataProcessor_str" length="25" py_type="class 'str'" size_bytes="66" xsd_type="anyType">example instance variable</instance_var>
+    <MySubSubClass>
+      <_MySubClass__private_instance_var>private instance variable</_MySubClass__private_instance_var>
+      <geolocation>America</geolocation>
+      <instance_var>example instance variable</instance_var>
+      <ip_addr>10.2.3.4</ip_addr>
+      <name>test name</name>
+      <port>8080</port>
     </MySubSubClass>
   </sequence>
 </root>

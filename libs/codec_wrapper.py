@@ -59,12 +59,12 @@ class CodecWrapper:
             codecs.CodecInfo: Return the loaded CodecInfo class.
         """
 
-        if (self._codecinfo is None):
+        if self._codecinfo is None:
             self._codecinfo = codecs.lookup(self._codec_name)
         else:
             assert self._codecinfo.name is not None
             # A codec is already loaded, but is it the one we want?
-            if (self._codecinfo.name.lower() != self._codec_name.lower()):
+            if self._codecinfo.name.lower() != self._codec_name.lower():
                 self._codecinfo = codecs.lookup(self._codec_name)
 
         # Get the official codec name.

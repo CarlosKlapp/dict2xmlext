@@ -1,6 +1,9 @@
+"""
+Miscellaneous helper functions.
+"""
 import platform
-import tzlocal
 from typing import Any, Dict, Optional, cast
+import tzlocal
 
 
 def coalesce(*values: Any) -> Optional[Any]:
@@ -55,7 +58,7 @@ def convert_windows_tz_name_to_iani_name(tzname: str) -> str:
     if tzname in wintz.values():
         # Nothing to do, the name is in the correct format
         return tzname
-    elif tzname in wintz.keys():
+    elif tzname in wintz.keys():  # pylint: disable=C0201; consider-iterating-dictionary
         # Convert it to the standar IANA name
         return wintz[tzname]
     else:

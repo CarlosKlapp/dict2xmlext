@@ -34,8 +34,8 @@ from libs.data_processor import (
 )
 from libs.data_type_identification import DataTypeIdentification
 from libs.xml_element_wrapper_converters import convert_to_etree
-from tests.config_test_cases import test_cases_config_rewrite_expected_output
-from tests.predefined_test_cases import list_of_my_classes
+from tests.config_test_cases import TEST_CASES_CONFIG_REWRITE_EXPECTED_OUTPUT
+from tests.predefined_test_cases import TEST_CASE, list_of_my_classes
 
 
 class Point3D(NamedTuple):
@@ -341,11 +341,31 @@ class TestDataProcessor(unittest.TestCase):
         e = convert_to_etree(ew)
         result = ET.tostring(e, encoding='unicode')
 
-        if test_cases_config_rewrite_expected_output:
+        if TEST_CASES_CONFIG_REWRITE_EXPECTED_OUTPUT:
             with open('./tests/expected_test_DataProcessor_class_custom_post_processor.mangled.xml', 'w', encoding="utf-8") as f:
                 f.write(result)
 
         with open('./tests/expected_test_DataProcessor_class_custom_post_processor.mangled.xml', 'r', encoding="utf-8") as f:
+            expected = f.read()
+        self.assertEqual(result, expected)
+
+    def test_DataProcessor_class_custom_post_processor_2(self):
+        # cspell:ignore unmangled
+        self.config.attr_flags = AttributeFlags.INC_ALL_DEBUG
+
+        ew = DataProcessorAbstractBaseClass.convert_to_xml(
+            config=self.config,
+            data=TEST_CASE
+        )
+        assert ew is not None
+        e = convert_to_etree(ew)
+        result = ET.tostring(e, encoding='unicode')
+
+        if TEST_CASES_CONFIG_REWRITE_EXPECTED_OUTPUT:
+            with open('./tests/expected_test_DataProcessor_class_custom_post_processor_2.xml', 'w', encoding="utf-8") as f:
+                f.write(result)
+
+        with open('./tests/expected_test_DataProcessor_class_custom_post_processor_2.xml', 'r', encoding="utf-8") as f:
             expected = f.read()
         self.assertEqual(result, expected)
 
