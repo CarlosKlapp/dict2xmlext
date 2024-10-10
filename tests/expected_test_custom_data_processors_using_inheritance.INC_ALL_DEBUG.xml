@@ -1,0 +1,21 @@
+<root id="1">
+  <sequence id="2" debug_info="processed_by:DataProcessor_sequence" length="3" py_type="class 'list'" length_element_text="0" xsd_type="anyType">
+    <MyClass id="3" debug_info="processed_by:DataProcessor_MyClass" py_type="class 'tests.predefined_test_cases.MyClass'" length_element_text="0" xsd_type="anyType">
+      <name id="4" debug_info="processed_by:DataProcessor_str" length="9" py_type="class 'str'" length_element_text="9" xsd_type="anyType">test name</name>
+    </MyClass>
+    <MySubClass id="5" debug_info="processed_by:DataProcessor_MySubClass" py_type="class 'tests.predefined_test_cases.MySubClass'" length_element_text="0" xsd_type="anyType">
+      <name id="6" debug_info="processed_by:DataProcessor_str" length="9" py_type="class 'str'" length_element_text="9" xsd_type="anyType">test name</name>
+      <ip_addr id="7" debug_info="processed_by:DataProcessor_str" length="8" py_type="class 'str'" length_element_text="8" xsd_type="anyType">10.2.3.4</ip_addr>
+      <port id="8" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" length_element_text="4" xsd_type="anyType">8080</port>
+      <__private_instance_var id="9" debug_info="processed_by:DataProcessor_str" length="25" py_type="class 'str'" length_element_text="25" xsd_type="anyType">private instance variable</__private_instance_var>
+    </MySubClass>
+    <MySubSubClass id="10" debug_info="processed_by:DataProcessor_MySubSubClass" py_type="class 'tests.predefined_test_cases.MySubSubClass'" length_element_text="0" xsd_type="anyType">
+      <name id="11" debug_info="processed_by:DataProcessor_str" length="9" py_type="class 'str'" length_element_text="9" xsd_type="anyType">test name</name>
+      <ip_addr id="12" debug_info="processed_by:DataProcessor_str" length="8" py_type="class 'str'" length_element_text="8" xsd_type="anyType">10.2.3.4</ip_addr>
+      <port id="13" debug_info="processed_by:DataProcessor_numeric" py_type="class 'int'" length_element_text="4" xsd_type="anyType">8080</port>
+      <__private_instance_var id="14" debug_info="processed_by:DataProcessor_str" length="25" py_type="class 'str'" length_element_text="25" xsd_type="anyType">private instance variable</__private_instance_var>
+      <geolocation id="15" debug_info="processed_by:DataProcessor_str" length="7" py_type="class 'str'" length_element_text="7" xsd_type="anyType">America</geolocation>
+      <instance_var id="16" debug_info="processed_by:DataProcessor_str" length="25" py_type="class 'str'" length_element_text="25" xsd_type="anyType">example instance variable</instance_var>
+    </MySubSubClass>
+  </sequence>
+</root>

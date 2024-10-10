@@ -1,0 +1,5 @@
+source /mnt/c/_src/dict2xmlext/.venv/bin/activate
+coverage run -m unittest discover  -p "*_test.py" && coverage lcov
+
+pip3 install --upgrade pip
+pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U
