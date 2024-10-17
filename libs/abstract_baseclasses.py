@@ -23,9 +23,9 @@ Type alias for the config base class.
 """
 
 
-XmlElementTypeAlias: TypeAlias = "XmlElementNameBaseClass"
+XmlElementTypeAlias: TypeAlias = "XmlElementBaseClass"
 """
-Type alias for `XmlElementTypeAlias`. This is an argument type
+Type alias for `XmlElementBaseClass`. This is an argument type
 of most methods in this library.
 """
 
@@ -124,11 +124,11 @@ class ConfigBaseClass(ABC):
         Holds a reference to DataTypeIdentification.
         """
 
-        self.xml_element_name_fixer: XmlElementNameBaseClass
+        self.xml_element_name_fixer: XmlElementBaseClass
         """
         Used to fix the name of an XML element name.
 
-        Holds a reference to XmlElementNameBaseClass
+        Holds a reference to XmlElementBaseClass
         """
 
     @property
@@ -204,15 +204,16 @@ class ConfigBaseClass(ABC):
         value: str
     ) -> XmlAttributesTypeAlias:
         """
-        Given an integer and str, create a dictionary that will
-        be used for attributes.
+        Given an integer and str, create a dictionary that can
+        be used as an attribute.
 
         Args:
-            attr_flag (AttributeFlags): _description_
-            value (str): _description_
+            attr_flag (AttributeFlags): Flag used in the configuration.
+                Key portion of the dictionary.
+            value (str): Text used as the value portion of the dictionary.
 
         Returns:
-            XmlAttributesTypeAlias: _description_
+            XmlAttributesTypeAlias: Dictionary with a single key/value entry.
         """
         return {self.attr_flag_names[attr_flag]: value}
 
@@ -257,7 +258,7 @@ class DataProcessorAbstractBaseClass(ABC):
         Return the default element name of the XML -> `<element_name>...</element_name>`.
 
         Args:
-            data (Any): data to be encoded as XML
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
             str: element name
@@ -269,7 +270,7 @@ class DataProcessorAbstractBaseClass(ABC):
         Indicates whether this class can endode this data type.
 
         Args:
-            data (Any): _description_
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
             bool: True if the class can encode this data type, False otherwise.
@@ -288,12 +289,10 @@ class DataProcessorAbstractBaseClass(ABC):
         recursively encode the nested objects.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            current (XmlElementTypeAlias): _description_
-            data (Any): _description_
-
-        Returns:
-            _type_: _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            current (XmlElementTypeAlias): The current XML node, a child of `parent`.
+            data (Any): Additional data to be encoded into the XML structure.
+            child_name (Optional[str], optional): XML element name. Defaults to None.
         """
 
     def _get_textual_representation_of_data(  # pylint: disable=W0613;unused-argument
@@ -308,9 +307,9 @@ class DataProcessorAbstractBaseClass(ABC):
         element -> `<element_name>text</element_name>`.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            current (XmlElementTypeAlias): _description_
-            data (Any): _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            current (XmlElementTypeAlias): The current XML node, a child of `parent`.
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
             Optional[str]: Data converted to a textual representation or None.
@@ -343,8 +342,8 @@ class DataProcessorAbstractBaseClass(ABC):
             or self.get_default_element_name(config, data)
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            data (Any): _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            data (Any): Additional data to be encoded into the XML structure.
             child_name (Optional[str], optional): XML element name. Defaults to None.
 
         Returns:
@@ -362,7 +361,7 @@ class DataProcessorAbstractBaseClass(ABC):
         For example, `<element_name type_hint="namedtuple">...</element_name>`
 
         Args:
-            data (Any): _description_
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
             Optional[str]: Data type hint or None.
@@ -377,7 +376,7 @@ class DataProcessorAbstractBaseClass(ABC):
         (e.g. America/New_York, Europe/Paris or Asia/Tokyo)">...</element_name>`
 
         Args:
-            data (Any): _description_
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
             Optional[str]: Comment to add as an attribute or None.
@@ -391,7 +390,7 @@ class DataProcessorAbstractBaseClass(ABC):
         For example, `<element_name format_string_hint="YYYYMMDD">...</element_name>`
 
         Args:
-            data (Any): _description_
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
             Optional[str]: Format of the data or None.
@@ -406,15 +405,20 @@ class DataProcessorAbstractBaseClass(ABC):
         **kwargs: object
     ) -> DataProcessorReturnTypeAlias:
         """
-        _summary_
+        Attempts to convert the given `data` into a valid XML element. It may return
+        `None` if this class cannot convert the type of information in `data`.
+
+        See the method `_is_expected_data_type` for more details.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            data (Any): _description_
-            child_name (Optional[str], optional): _description_. Defaults to None.
+            parent (XmlElementTypeAlias): The parent node of the new child XML node.
+            data (Any): Additional data to be encoded into the XML structure.
+            child_name (Optional[str], optional): XML element name. Defaults to None.
 
         Returns:
-            DATA_PROCESSOR_RETURN_TYPE: _description_
+            DataProcessorReturnTypeAlias: Returns a new XML element (`XmlElementTypeAlias`) if the
+                conversion is successful. If the data cannot be converted into an XML element,
+                the method returns `None`.
         """
         if not self._is_expected_data_type(data):
             return None
@@ -450,12 +454,14 @@ class DataProcessorAbstractBaseClass(ABC):
         _summary_
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            data (Any): _description_
-            child_name (Optional[str], optional): _description_. Defaults to None.
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            data (Any): Additional data to be encoded into the XML structure.
+            child_name (Optional[str], optional): XML element name. Defaults to None.
 
         Returns:
-            DATA_PROCESSOR_RETURN_TYPE: _description_
+            DataProcessorReturnTypeAlias: Returns a new XML element (`XmlElementTypeAlias`) if the
+                conversion is successful. If the data cannot be converted into an XML element,
+                the method returns `None`.
         """
         e = self._try_converting(
             config=self.config,
@@ -479,15 +485,18 @@ class DataProcessorAbstractBaseClass(ABC):
         Instance method for converting an object to XML.
 
         Args:
-            parent (OptionalXmlElementTypeAlias): _description_
-            data (Any): _description_
-            child_name (Optional[str], optional): _description_. Defaults to None.
+            parent (OptionalXmlElementTypeAlias): An optional reference to the parent XML
+                    element, allowing for hierarchical XML structures.
+            data (Any): Additional data to be encoded into the XML structure.
+            child_name (Optional[str], optional): XML element name. Defaults to None.
 
         Returns:
-            DataProcessorReturnTypeAlias: _description_
+            DataProcessorReturnTypeAlias: Returns a new XML element (`XmlElementTypeAlias`) if the
+                conversion is successful. If the data cannot be converted into an XML element,
+                the method returns `None`.
         """
         if parent is None:
-            parent = XmlElementNameBaseClass.create_root_element(
+            parent = XmlElementBaseClass.create_root_element(
                 config=self.config,
                 tag=None,
                 attrib=None,
@@ -516,15 +525,18 @@ class DataProcessorAbstractBaseClass(ABC):
         Main method for converting an object to XML.
 
         Args:
-            config (ConfigTypeAlias): _description_
-            data (Any): _description_
-            attrib (OptionalXmlAttributesTypeAlias, optional): _description_. Defaults to None.
+            config (ConfigTypeAlias): Class for holding configuration and formatting data.
+            data (Any): Additional data to be encoded into the XML structure.
+            attrib (OptionalXmlAttributesTypeAlias, optional): A dictionary of attributes
+                    for the element
+                    (e.g., <tag id="123"> has an attribute id="123").
+                    Defaults to None.
 
         Returns:
-            XmlElementTypeAlias: _description_
+            XmlElementTypeAlias: An XML tree.
         """
         config.elements_sequential_counter = 0
-        root: XmlElementTypeAlias = XmlElementNameBaseClass.create_root_element(
+        root: XmlElementTypeAlias = XmlElementBaseClass.create_root_element(
             config=config,
             tag=None,
             attrib=attrib,
@@ -543,6 +555,20 @@ class DataProcessorAbstractBaseClass(ABC):
         child_name: Optional[str] = None,
         **kwargs: object
     ) -> DataProcessorReturnTypeAlias:
+        """
+        _summary_
+
+        Args:
+            config (ConfigTypeAlias): Class for holding configuration and formatting data.
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            data (Any): Additional data to be encoded into the XML structure.
+            child_name (Optional[str], optional): XML element name. Defaults to None.
+
+        Returns:
+            DataProcessorReturnTypeAlias: Returns a new XML element (`XmlElementTypeAlias`) if the
+                conversion is successful. If the data cannot be converted into an XML element,
+                the method returns `None`.
+        """
         e: DataProcessorReturnTypeAlias = None
 
         for processor in config.custom_pre_processors:
@@ -596,6 +622,20 @@ class DataProcessorAbstractBaseClass(ABC):
         child_name: Optional[str] = None,
         **kwargs: object
     ) -> DataProcessorReturnTypeAlias:
+        """
+        _summary_
+
+        Args:
+            config (ConfigTypeAlias): Class for holding configuration and formatting data.
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            data (Any): Additional data to be encoded into the XML structure.
+            child_name (Optional[str], optional): XML element name. Defaults to None.
+
+        Returns:
+            DataProcessorReturnTypeAlias: Returns a new XML element (`XmlElementTypeAlias`) if the
+                conversion is successful. If the data cannot be converted into an XML element,
+                the method returns `None`.
+        """
         e = cls._locate_appropriate_data_processor(
             config=config,
             parent=parent,
@@ -613,15 +653,22 @@ class DataProcessorAbstractBaseClass(ABC):
         **kwargs: object
     ) -> XmlAttributesTypeAlias:
         """
-        Returns a dictionary with the INC_ALT_ID attribute.
+        Generates and returns a dictionary containing the `INC_ALT_ID` attribute.
+        This attribute includes a newly generated UUID, which is used as a unique
+        identifier for the current XML node.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            current (XmlElementTypeAlias): _description_
-            data (Any): _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            current (XmlElementTypeAlias): The current XML node, a child of `parent`.
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
-            XmlAttributesTypeAlias: _description_
+            XmlAttributesTypeAlias: A dictionary where the key is the attribute
+                name (`INC_ALT_ID`) and the value is a unique UUID.
+
+        Example:
+            result = obj._attr_inc_alt_id(parent_node, current_node, data)
+            # result -> {"INC_ALT_ID": "a0d9f0d2-d1a1-4f28-96b5-736829afab1b"}
         """
         attrflag: Final[AttributeFlags] = AttributeFlags.INC_ALT_ID
         key: Final[str] = ATTRIBUTE_FLAGS_NAMES[attrflag]
@@ -638,12 +685,12 @@ class DataProcessorAbstractBaseClass(ABC):
         Returns a dictionary with the INC_BINARY_ENCODING attribute.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            current (XmlElementTypeAlias): _description_
-            data (Any): _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            current (XmlElementTypeAlias): The current XML node, a child of `parent`.
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
-            XmlAttributesTypeAlias: _description_
+            XmlAttributesTypeAlias: An XML tree
         """
         attrflag: Final[AttributeFlags] = AttributeFlags.INC_BINARY_ENCODING
         return {ATTRIBUTE_FLAGS_NAMES[attrflag]: self.config.codec_binary.codec.name}
@@ -659,12 +706,12 @@ class DataProcessorAbstractBaseClass(ABC):
         Returns a dictionary with the INC_DEBUG_INFO attribute.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            current (XmlElementTypeAlias): _description_
-            data (Any): _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            current (XmlElementTypeAlias): The current XML node, a child of `parent`.
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
-            XmlAttributesTypeAlias: _description_
+            XmlAttributesTypeAlias: An XML tree.
         """
         attrflag: Final[AttributeFlags] = AttributeFlags.INC_DEBUG_INFO
         return {ATTRIBUTE_FLAGS_NAMES[attrflag]: f'processed_by:{self.__class__.__name__}'}
@@ -680,12 +727,12 @@ class DataProcessorAbstractBaseClass(ABC):
         Returns a dictionary with the INC_FIELD_COMMENT attribute.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            current (XmlElementTypeAlias): _description_
-            data (Any): _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            current (XmlElementTypeAlias): The current XML node, a child of `parent`.
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
-            XmlAttributesTypeAlias: _description_
+            XmlAttributesTypeAlias: An XML tree.
         """
         attrflag: Final[AttributeFlags] = AttributeFlags.INC_FIELD_COMMENT
         attr: XmlAttributesTypeAlias = {}
@@ -706,12 +753,12 @@ class DataProcessorAbstractBaseClass(ABC):
         Returns a dictionary with the INC_FIELD_TYPE_HINT attribute.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            current (XmlElementTypeAlias): _description_
-            data (Any): _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            current (XmlElementTypeAlias): The current XML node, a child of `parent`.
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
-            XmlAttributesTypeAlias: _description_
+            XmlAttributesTypeAlias: An XML tree.
         """
         attrflag: Final[AttributeFlags] = AttributeFlags.INC_FIELD_TYPE_HINT
         attr: XmlAttributesTypeAlias = {}
@@ -732,12 +779,12 @@ class DataProcessorAbstractBaseClass(ABC):
         Returns a dictionary with the INC_FORMAT_STRING_HINT attribute.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            current (XmlElementTypeAlias): _description_
-            data (Any): _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            current (XmlElementTypeAlias): The current XML node, a child of `parent`.
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
-            XmlAttributesTypeAlias: _description_
+            XmlAttributesTypeAlias: An XML tree.
         """
         attrflag: Final[AttributeFlags] = AttributeFlags.INC_FORMAT_STRING_HINT
         attr: XmlAttributesTypeAlias = {}
@@ -758,12 +805,12 @@ class DataProcessorAbstractBaseClass(ABC):
         Returns a dictionary with the INC_LEN attribute.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            current (XmlElementTypeAlias): _description_
-            data (Any): _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            current (XmlElementTypeAlias): The current XML node, a child of `parent`.
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
-            XmlAttributesTypeAlias: _description_
+            XmlAttributesTypeAlias: An XML tree.
         """
         attrflag: Final[AttributeFlags] = AttributeFlags.INC_LEN
         attr: XmlAttributesTypeAlias = {}
@@ -790,12 +837,12 @@ class DataProcessorAbstractBaseClass(ABC):
         Returns a dictionary with the INC_PYTHON_DATA_TYPE attribute.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            current (XmlElementTypeAlias): _description_
-            data (Any): _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            current (XmlElementTypeAlias): The current XML node, a child of `parent`.
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
-            XmlAttributesTypeAlias: _description_
+            XmlAttributesTypeAlias: An XML tree.
         """
         attrflag: Final[AttributeFlags] = AttributeFlags.INC_PYTHON_DATA_TYPE
         # type has the form "<class 'int'>". Use [1:-1] to convert it to "class 'int'"
@@ -812,12 +859,12 @@ class DataProcessorAbstractBaseClass(ABC):
         Returns a dictionary with the INC_LENGTH_ELEMENT_TEXT attribute.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            current (XmlElementTypeAlias): _description_
-            data (Any): _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            current (XmlElementTypeAlias): The current XML node, a child of `parent`.
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
-            XmlAttributesTypeAlias: _description_
+            XmlAttributesTypeAlias: An XML tree.
         """
         attrflag: Final[AttributeFlags] = AttributeFlags.INC_LENGTH_ELEMENT_TEXT
         attr: XmlAttributesTypeAlias = {}
@@ -837,12 +884,12 @@ class DataProcessorAbstractBaseClass(ABC):
         Returns a dictionary with the INC_XSD_DATA_TYPE attribute.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            current (XmlElementTypeAlias): _description_
-            data (Any): _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            current (XmlElementTypeAlias): The current XML node, a child of `parent`.
+            data (Any): Additional data to be encoded into the XML structure.
 
         Returns:
-            XmlAttributesTypeAlias: _description_
+            XmlAttributesTypeAlias: An XML tree.
         """
         attrflag: Final[AttributeFlags] = AttributeFlags.INC_XSD_DATA_TYPE
         return {ATTRIBUTE_FLAGS_NAMES[attrflag]: 'anyType'}
@@ -860,9 +907,9 @@ class DataProcessorAbstractBaseClass(ABC):
         the results to the XML element.
 
         Args:
-            parent (XmlElementTypeAlias): _description_
-            current (XmlElementTypeAlias): _description_
-            data (Any): _description_
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            current (XmlElementTypeAlias): The current XML node, a child of `parent`.
+            data (Any): Additional data to be encoded into the XML structure.
         """
         attr: XmlAttributesTypeAlias = {}
 
@@ -961,11 +1008,10 @@ class DataProcessorAbstractBaseClass(ABC):
         current.attributes |= attr
 
 
-class XmlElementNameBaseClass:
+class XmlElementBaseClass:
     """
-    Abstract base class responsible for creating XML elements and
-    determining the validity of an XML element name
-    and fixing the name so it conforms the XML standard.
+    Abstract base class responsible for creating XML elements. Includes
+    `parent` reference and a list of `child` elements.
     """
 
     _DEFAULT_REGEX_PATTERN_IS_VALID_ELEMENT_NAME: Final[re.Pattern[str]] = \
@@ -985,6 +1031,34 @@ class XmlElementNameBaseClass:
         attrib: OptionalXmlAttributesTypeAlias,
         parent: OptionalXmlElementTypeAlias
     ) -> None:
+        """
+        Class constructor.
+
+        Args:
+            config (ConfigTypeAlias): Class for holding configuration and formatting data.
+            tag (str): The name of the element `<tag>...</tag>`.
+            text (Optional[str]): Optional text content for the XML element. `<tag>text</tag>`
+            attrib (OptionalXmlAttributesTypeAlias): A dictionary of attributes for the element
+                    (e.g., <tag id="123"> has an attribute id="123").
+            parent (OptionalXmlElementTypeAlias): An optional reference to the parent XML element,
+                    allowing for hierarchical XML structures.: An optional reference to the parent
+                    XML element, allowing for hierarchical XML structures.
+
+        Example:
+            Create an instance of XmlElementTypeAlias (which is an alias for XmlElementBaseClass)\n
+            element: XmlElementTypeAlias = XmlElementBaseClass(\n
+                config=config_obj,\n
+                tag="example",\n
+                text="Hello World",\n
+                attrib={"id": "123"},\n
+                parent=None  # This can be another XmlElementTypeAlias object if nested\n
+            )
+
+            print(element.tag)  # Output: example\n
+            print(element.text)  # Output: Hello World\n
+            print(element.attrib)  # Output: {'id': '123'}\n
+        """
+
         self.config = config
         """
         Reference to the config information.
@@ -1042,7 +1116,6 @@ class XmlElementNameBaseClass:
         name is determined.
 
         Args:
-            config (ConfigTypeAlias): _description_
             tag(str): Element name.
 
         Returns:
@@ -1061,7 +1134,6 @@ class XmlElementNameBaseClass:
         name will be corrected.
 
         Args:
-            config (ConfigTypeAlias): _description_
             tag (str): Element name.
 
         Returns:
@@ -1090,10 +1162,13 @@ class XmlElementNameBaseClass:
         Add a root XML element.
 
         Args:
-            config (ConfigTypeAlias): _description_
+            config (ConfigTypeAlias): Class for holding configuration and formatting data.
             tag (Optional[str]): The name of the element `<tag>...</tag>`. If None, then the
                 `config.root_label` is used.
-            attrib (OptionalXmlAttributesTypeAlias, optional): _description_. Defaults to None.
+            text (Optional[str]): Optional text content for the XML element. `<tag>text</tag>`
+            attrib (OptionalXmlAttributesTypeAlias, optional): A dictionary of attributes
+                for the element
+                (e.g., <tag id="123"> has an attribute id="123"). Defaults to None.
 
         Returns:
             XmlElementTypeAlias: _description_
@@ -1120,10 +1195,13 @@ class XmlElementNameBaseClass:
         Add a child XML element.
 
         Args:
-            config (ConfigTypeAlias): _description_
-            parent (XmlElementTypeAlias): _description_
+            config (ConfigTypeAlias): Class for holding configuration and formatting data.
             tag (str): The name of the element `<tag>...</tag>`.
-            attrib (OptionalXmlAttributesTypeAlias, optional): _description_. Defaults to None.
+            text (Optional[str]): Optional text content for the XML element. `<tag>text</tag>`.
+                Defaults to None.
+            attrib (OptionalXmlAttributesTypeAlias, optional): A dictionary of attributes
+                for the element
+                    (e.g., <tag id="123"> has an attribute id="123"). Defaults to None.
 
         Returns:
             XmlElementTypeAlias: _description_
@@ -1151,15 +1229,17 @@ class XmlElementNameBaseClass:
         Internal helper to actually create the XML element.
 
         Args:
-            config (ConfigTypeAlias): _description_
-            parent (XmlElementTypeAlias): _description_
-            tag (str): _description_
-            attrib (Optional[Dict[int, str]], optional): _description_. Defaults to None.
+            config (ConfigTypeAlias): Class for holding configuration and formatting data.
+            parent (XmlElementTypeAlias): The parent node of the current XML node.
+            tag (str): The name of the element `<tag>...</tag>`.
+            text (Optional[str]): Optional text content for the XML element. `<tag>text</tag>`
+            attrib (Optional[Dict[int, str]], optional): A dictionary of attributes for the element
+                    (e.g., <tag id="123"> has an attribute id="123"). Defaults to None.
 
         Returns:
             XmlElementTypeAlias: _description_
         """
-        element: XmlElementNameBaseClass = XmlElementNameBaseClass(
+        element: XmlElementBaseClass = XmlElementBaseClass(
             config=config,
             tag=tag,
             text=text,

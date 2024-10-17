@@ -16,8 +16,8 @@ def convert_to_etree(
     Convert the XML wrapper to an `xml.etree.ElementTree`.
 
     Args:
-        xml_wrapper (XmlElementTypeAlias): _description_
-        parent (Optional[ET.Element]): _description_
+        xml_wrapper (XmlElementTypeAlias): An XML tree structure.
+        parent (Optional[ET.Element], optional): Parent node where the XML tree will be attached. Defaults to None.
 
     Returns:
         ET.Element: return the root node

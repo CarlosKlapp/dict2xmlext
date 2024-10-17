@@ -21,7 +21,7 @@ import calendar
 import unittest
 import tzlocal
 from dateutil import tz
-from libs.abstract_baseclasses import XmlAttributesTypeAlias, XmlElementNameBaseClass
+from libs.abstract_baseclasses import XmlAttributesTypeAlias, XmlElementBaseClass
 from libs.attributes import AttributeFlags, ATTRIBUTE_FLAGS_NAMES
 from libs.codec_wrapper import CodecWrapper
 from libs.config import Config
@@ -111,7 +111,7 @@ class TestDataProcessor(unittest.TestCase):
         self.assertFalse(self.is_valid_uuid(''))
 
     def baseclass_test_helper(self, dp: DataProcessorAbstractBaseClass):
-        et_parent = XmlElementNameBaseClass.create_root_element(config=self.config)
+        et_parent = XmlElementBaseClass.create_root_element(config=self.config)
         et_current = et_parent.create_child_element(config=self.config, tag='dummy', text='dummy')
         assert et_current.text is not None
 
@@ -145,7 +145,7 @@ class TestDataProcessor(unittest.TestCase):
         self.assertDictEqual(d, {ATTRIBUTE_FLAGS_NAMES[AttributeFlags.INC_XSD_DATA_TYPE]: 'anyType'})
 
     def test_add_attributes(self):
-        et_parent = XmlElementNameBaseClass.create_root_element(config=self.config)
+        et_parent = XmlElementBaseClass.create_root_element(config=self.config)
         et_current = et_parent.create_child_element(config=self.config, tag='test')
 
         dp = DataProcessor_used_for_testing(self.config)
@@ -279,7 +279,7 @@ class TestDataProcessor(unittest.TestCase):
         dp = DataProcessor_used_for_testing(self.config)
         self.baseclass_test_helper(dp)
 
-        et_parent = XmlElementNameBaseClass.create_root_element(config=self.config)
+        et_parent = XmlElementBaseClass.create_root_element(config=self.config)
         self.assertIsNotNone(dp.convert_to_xml(self.config, 'dummy'))
 
     def test_DataProcessor_with_hints(self):
@@ -287,7 +287,7 @@ class TestDataProcessor(unittest.TestCase):
         self.assertEqual(dp._get_field_type_hint('dummy'), 'test- get_field_type_hint')
         self.assertEqual(dp._get_format_string_hint('dummy'), 'test- get_format_string_hint')
 
-        et_parent = XmlElementNameBaseClass.create_root_element(config=self.config)
+        et_parent = XmlElementBaseClass.create_root_element(config=self.config)
         et_current = et_parent.create_child_element(config=self.config, tag='dummy')
 
         d = dp._attr_field_type_hint(et_parent, et_current, 'dummy')
@@ -320,7 +320,7 @@ class TestDataProcessor(unittest.TestCase):
         cw = CodecWrapper()
         cw.codec_name = 'zip'
         self.config.codec_binary = cw
-        et_parent = XmlElementNameBaseClass.create_root_element(config=self.config)
+        et_parent = XmlElementBaseClass.create_root_element(config=self.config)
         ew = dp.convert(et_parent, b'dummy-dummy-dummy-dummy-dummy-dummy-dummy-dummy-dummy-dummy-dummy')
         assert ew is not None
         e = convert_to_etree(ew)
