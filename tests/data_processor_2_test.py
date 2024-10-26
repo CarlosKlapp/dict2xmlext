@@ -14,6 +14,7 @@ from libs.abstract_baseclasses import DataProcessorAbstractBaseClass, XmlElement
 from libs.attributes import AttributeFlags
 from libs.config import Config
 from libs.data_processor import DataProcessor_post_processor_for_classes
+from libs.misc import islinux
 from libs.xml_element_wrapper_converters import convert_to_etree
 from tests.config_test_cases import TEST_CASES_CONFIG_REWRITE_EXPECTED_OUTPUT
 from tests.predefined_test_cases import MyClass, MySubClass, MySubSubClass, TEST_CASE
@@ -37,15 +38,17 @@ class TestDataProcessor2(unittest.TestCase):
         ET.indent(e)
         result = ET.tostring(e, encoding='unicode')
 
+        filename: str
+        if islinux():
+            filename = './tests/expected_test_builder.INC_ALL_DEBUG.linux.xml'
+        else:
+            filename = './tests/expected_test_builder.INC_ALL_DEBUG.windows.xml'
+
         if TEST_CASES_CONFIG_REWRITE_EXPECTED_OUTPUT:
-            with open(
-                './tests/expected_test_builder.INC_ALL_DEBUG.xml',
-                'w',
-                encoding="utf-8"
-            ) as f:
+            with open(filename, 'w', encoding="utf-8") as f:
                 f.write(result)
 
-        with open('./tests/expected_test_builder.INC_ALL_DEBUG.xml', 'r', encoding="utf-8") as f:
+        with open(filename, 'r', encoding="utf-8") as f:
             expected = f.read()
 
         self.assertEqual(result, expected)

@@ -6,6 +6,8 @@ from typing import Any, Final, Optional, override
 import datetime as dt
 import re
 import inspect
+import os
+from pathlib import Path
 from libs.abstract_baseclasses import (
     DataProcessorAbstractBaseClass,
     DataProcessorReturnTypeAlias,
@@ -573,19 +575,25 @@ class DataProcessor_tzinfo(DataProcessorAbstractBaseClass):
         data: Any,
         **kwargs: object
     ) -> Optional[str]:
-        idx: int = -1
         text: str = 'unknown'
         if hasattr(data, '_filename'):
-            idx = data._filename.find('zoneinfo')  # pylint: disable=W0212; protected-access
-            if idx < 0:
-                # not found
-                text = data._filename  # pylint: disable=W0212; protected-access
-            else:
-                # found
-                text = data._filename[idx + len('zoneinfo/'):]  # pylint: disable=W0212; protected-access
+            # Handle to linux case
+            filename: Optional[str] = getattr(data, '_filename')
+            if filename is None:
+                return text
+            # Linux returns '/etc/localtime'
+            if Path(filename).is_symlink():
+                # we need to resolve the symbolic link
+                filename = os.path.realpath(filename)
+
+            # The complete path will have this format /usr/share/zoneinfo/America/Chicago
+            # We only want the last two: America/Chicago
+            text = "/".join(filename.split('/')[-2:])
         elif hasattr(data, '_tznames'):
-            if len(data._tznames) > 0:  # pylint: disable=W0212; protected-access
-                text = convert_windows_tz_name_to_iani_name(data._tznames[0])  # pylint: disable=W0212; protected-access
+            # Handle the Windows case
+            names: tuple[str] = getattr(data, '_tznames')
+            if len(names) > 0:  # pylint: disable=W0212; protected-access
+                text = convert_windows_tz_name_to_iani_name(names[0])  # pylint: disable=W0212; protected-access
 
         return text
 

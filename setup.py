@@ -9,14 +9,15 @@ setup(
     packages=find_packages(),
     version='1.0.0',
     description='An extensible library for converting a python dictionary to an XML string',
-    long_description='',
-    author='Carlos Klapp',
+    long_description=open('README.md').read(),  # Include the README for the long description  # type: ignore
+    long_description_content_type="text/markdown",  # Type of content in README (Markdown)    author='Carlos Klapp',
     author_email='CarlosK.Github@gmail.com',
     license='MIT',
     maintainer='Carlos Klapp',
     maintainer_email='CarlosK.Github@gmail.com',
     keywords=['dict', 'dictionary', 'dictionaries', 'xml', 'convert'],
-    python_requires=">= 3.10",
+    packages=find_packages(),              # Automatically find the package directories  # type: ignore
+    python_requires=">= 3.12",
     classifiers=[
         "Development Status :: 4 - Beta",
         "License :: OSI Approved :: MIT License",

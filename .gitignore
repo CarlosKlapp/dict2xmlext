@@ -104,6 +104,10 @@ celerybeat.pid
 # Environments
 .env
 .venv
+# windows
+.venvw
+# linux
+.venvl
 env/
 venv/
 ENV/

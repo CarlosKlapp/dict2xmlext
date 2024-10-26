@@ -33,6 +33,7 @@ from libs.data_processor import (
     DataProcessor_used_for_testing_use_hints
 )
 from libs.data_type_identification import DataTypeIdentification
+from libs.misc import islinux
 from libs.xml_element_wrapper_converters import convert_to_etree
 from tests.config_test_cases import TEST_CASES_CONFIG_REWRITE_EXPECTED_OUTPUT
 from tests.predefined_test_cases import TEST_CASE, list_of_my_classes
@@ -361,11 +362,17 @@ class TestDataProcessor(unittest.TestCase):
         e = convert_to_etree(ew)
         result = ET.tostring(e, encoding='unicode')
 
+        filename: str
+        if islinux():
+            filename = './tests/expected_test_DataProcessor_class_custom_post_processor_2_linux.xml'
+        else:
+            filename = './tests/expected_test_DataProcessor_class_custom_post_processor_2_windows.xml'
+
         if TEST_CASES_CONFIG_REWRITE_EXPECTED_OUTPUT:
-            with open('./tests/expected_test_DataProcessor_class_custom_post_processor_2.xml', 'w', encoding="utf-8") as f:
+            with open(filename, 'w', encoding="utf-8") as f:
                 f.write(result)
 
-        with open('./tests/expected_test_DataProcessor_class_custom_post_processor_2.xml', 'r', encoding="utf-8") as f:
+        with open(filename, 'r', encoding="utf-8") as f:
             expected = f.read()
         self.assertEqual(result, expected)
 
